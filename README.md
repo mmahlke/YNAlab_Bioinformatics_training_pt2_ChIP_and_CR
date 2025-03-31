@@ -4,22 +4,25 @@
 
 
 ## What are ChIP-seq and CUT&RUN?
-**ChIP-seq**  **CUT&RUN**
-Solarized dark             |  Solarized Ocean
+
+ChIP-seq             |  CUT&RUN
 :-------------------------:|:-------------------------:
-![](https://...Dark.png)  |  ![](https://...Ocean.png)
+![ChIP-seq basic steps](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/ChIP-blog-figure-1.jpg)  |  ![CUT&RUN basic steps](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/cut-run-blog-figure-1.png)
 
-<p align="center">
-  <img alt="Light" src="https://www.epicypher.com/content/Blog/Figures/ChIP-blog-figure-1.jpg" width="49%">
-&nbsp; &nbsp; &nbsp; &nbsp;
-  <img alt="Dark" src="https://www.epicypher.com/content/Blog/cut-run-blog/cut-run-blog-figure-1.png" width="46%">
-</p>
-
-<img src="[image1.png](https://www.epicypher.com/content/Blog/Figures/ChIP-blog-figure-1.jpg)" width="100"/> <img src="[image2.png](https://www.epicypher.com/content/Blog/cut-run-blog/cut-run-blog-figure-1.png)" width="50"/>
-
-![Image depicting ChIP-seq basic workflow.](https://www.epicypher.com/content/Blog/Figures/ChIP-blog-figure-1.jpg)  ![Image depicting CUT&RUN basic workflow](https://www.epicypher.com/content/Blog/cut-run-blog/cut-run-blog-figure-1.png)
-
-![Image depicting ChIP-seq basic workflow.](https://www.epicypher.com/content/Blog/Figures/ChIP-blog-figure-1.jpg)
 *Images from epicypher*
 
-ChIP-seq and CUT&RUN are methods for determining the positions of histones/histone modifications or DNA binding proteins on DNA. Both methods rely on antibodies as an important initial step to select for proteins of interest. However, they differ in how their antibody-based fragment selection is performed. Key differences between ChIP-seq and CUT&RUN are: 
+<br />
+$$\textnormal{\color{darkorange}ChIP-seq}$$ and $$\textnormal{\color{darkorange}CUT&RUN}$$ $$\textnormal{\color{darkorange}kernel}$$ are methods for determining the positions of histones/histone modifications or DNA binding proteins on DNA. Both methods rely on antibodies as an important initial step to select for proteins of interest. However, they differ in how their antibody-based DNA selection is performed. Key differences between ChIP-seq and CUT&RUN are: $$\textnormal{\color{darkorange}CRC ecosystem}$$
+
+<div align="center">
+  
+ChIP-seq             |  CUT&RUN
+:-------------------------:|:-------------------------:
+First step fragmentation | First step antibody binding
+Fragmentation can be mechanical or enzymatic | Fragmentation performed by pA-MNase
+Fragments collected by immunoprecipitation | Fragments collected by passive release from cells
+Many cells required | Fewer cells required
+More antibody volume | Less antibody volume
+Enrichment signal amplified | Detects small signals and noise
+
+</div>
