@@ -12,10 +12,11 @@ ChIP-seq             |  CUT&RUN
 *Images from epicypher*
 
 <br />
-$$\textnormal{\color{darkorange}ChIP-seq}$$ and $$\textnormal{\color{darkorange}CUT&RUN}$$ $$\textnormal{\color{darkorange}kernel}$$ are methods for determining the positions of histones/histone modifications or DNA binding proteins on DNA. Both methods rely on antibodies as an important initial step to select for proteins of interest. However, they differ in how their antibody-based DNA selection is performed. Key differences between ChIP-seq and CUT&RUN are: $$\textnormal{\color{darkorange}CRC ecosystem}$$
-
+ChIP-seq and CUT&RUN are methods for determining the positions of histones/histone modifications or DNA binding proteins on DNA. Both methods rely on antibodies as an important initial step to select for proteins of interest. However, they differ in how their antibody-based DNA selection is performed. Key differences between ChIP-seq and CUT&RUN are: 
+<br />
+<br />
 <div align="center">
-  
+
 ChIP-seq             |  CUT&RUN
 :-------------------------:|:-------------------------:
 First step fragmentation | First step antibody binding
