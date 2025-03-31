@@ -1,11 +1,13 @@
-# **Analyzing ChIP-seq and CUT&RUn datasets**
-*YNA lab bioinformatics training series, pt 1*
+# **Analyzing ChIP-seq and CUT&RUN datasets**
+*YNA lab bioinformatics training series, pt 2*
 
 
 
-## What are the cluster?
+## What are ChIP-seq and CUT&RUN?
 **ChIP-seq**  **CUT&RUN**
-
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![](https://...Dark.png)  |  ![](https://...Ocean.png)
 
 <p align="center">
   <img alt="Light" src="https://www.epicypher.com/content/Blog/Figures/ChIP-blog-figure-1.jpg" width="49%">
