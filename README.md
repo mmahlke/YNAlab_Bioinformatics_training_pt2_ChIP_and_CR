@@ -129,4 +129,27 @@ E2_12m  | XXXX | 1 |
 
 When calculating the ratios, always set the sample with the lowest coverage to 1 and make it's # of mapped reads the denominator for scaling all other samples. It's always better to scale down your existing data than to scale up, creating non-existent arbitrary data. 
 
-Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. 
+Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. Great documentation for this package can be found here.
+
+Let's load our modules and run the command to make a bigWig track for each of our samples.
+```
+module purge
+module load deeptools/3.3.0
+
+bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
+bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
+bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
+```
+Now download those bigWigs (.bw) to your computer. We will discuss the two ways we can view them. 
+
+First, let's view the bigWigs with IGV (Integrated Genome Viewer). IGV is available as a software you can install or as a website you can visit. Let's visit the website together. 
+https://igv.org/app/
+
+IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
+
+Let's load all of our bigWig files onto IGV and take a look at Chr4. You can scroll around and look at the data across the entire genome. These CUT&RUN for CENP-A should show enrichment at the centromeres and at NeoCEN4 on Chr4. Here's a snapshot of the data at NeoCEN4:
+
+
+We can compare CENP-A position and see how it changes, but how can we tell if the changes are significant? We do that by calling peaks. 
+
+
