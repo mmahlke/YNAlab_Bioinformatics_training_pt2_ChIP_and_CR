@@ -38,8 +38,8 @@ ChIP-seq             |  CUT&RUN
 Read trimming | Read trimming
 Align with BWA | Align with bowtie2
 Normalize to input | Normalize to scaling factor, spike-in control, or - control 
-Call peaks with MACS2 | Call peaks with MACS2 and/or SEACR
 Create tracks with deeptools | Create tracks with deeptools
+Call peaks with MACS2 | Call peaks with MACS2 and/or SEACR
 Visualize tracks and peaks (IGV, UCSC) | Visualize tracks and peaks (IGV, UCSC)
 
 </div>
@@ -68,9 +68,29 @@ Before we start, it's important to think about how we will normalize our files. 
 
 'Normalizing' is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample that we submit for sequencing, but in reality that is not the case. To create maningful visualizations (bigWig tracks) and robustly identify enrichment (peak calling with MACS2, SEACR) between samples, we need to start with samples that have equal sequencing coverage. Otherwise, a sample with higher coverage could appear to have more enrichment than another sample. Thus, we need to normalize our samples before we create bigWigs or call peaks. 
 
+There are several ways to normalize depending on your data type and different types of normalization can be used to address different concerns. 
+For ChIP-seq:
++ normalize to spike-in control
+  ++ a spike-in control normalizes for differences in library preparation and sequencing outside of biological vairation between samples
++ normalize to input sample
+  ++ an input sample is a control for background binding and tells us what part of a sample's enrichment is not due to randomness
+
+For CUT&RUN:
++ normalize to a spike-in control
+  + again, normalize for differences in library preparation and sequencing
++ normalize to a - control sample (like an input)
+  + again, controlling for background levels
+  + without a - control, you can use thresholding to set a background level
 
 
+In general, the steps for normalizing are:
+1) Align your sequencing reads to the spike-in genome
+2) Count total reads aligned to spike-in genome for each sample
+  +  Optionally count total sequencing coverage*
+4) Calculate scaling factors for each sample
+5) Apply scaling factors to samples and control
 
-The point of normalizing is so that we can compare samples accurately and the way that we visualize sample data is with tracks. We also use peak calling to identify statistically enriched reagions among our samples, and we need to ensure we are performing statistical tests on samples that are normalized to each other. So rather than being a standalone process, normalization is something that is performed when we call for peaks and when we generate tracks for visualization.  
 
-What are we even normalizing though? Technically, we are normalizing the read counts or read coverage of each sample to each other. 
+Let's assess our samples and calculate normalization ratios.
+```
+
