@@ -68,20 +68,21 @@ And now we have them in our own working directory. These are five different file
 
 Great, we have these aligned files but we can't see anything. Let's generate something we can see. We can visualize read alignment using $$\textnormal{\color{gold}bigWig}$$ tracks. $$\textnormal{\color{gold}BigWig}$$ is a type of compressed, indexed, binary format used to efficiently store and visualize genome-wide signal data, like read coverage or signal intensity, in genome browsers. It's useful because it allows a browser to call to parts of the file at a time rather than loading the very large dataset across the entire genome. So let's generate some $$\textnormal{\color{gold}bigWig}$$ tracks for our files.
 
-Before we start, it's important to think about how we will **normalize** our files. Normalizing files, calling peaks, and creating bigWig tracks are intertwined.
+Before we start, it's important to think about how we will **normalize** our files. Normalizing files, calling $$\textnormal{\color{violet}peaks}$$, and creating $$\textnormal{\color{gold}bigWig}$$ tracks are intertwined.
 
 ## Normalizing files for analysis
-**Normalizing** is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample that we submit for sequencing, but in reality that is not the case. To create maningful visualizations (bigWig tracks) and robustly identify enrichment (peak calling with MACS2, SEACR) between samples, we need to start with samples that have equal sequencing coverage. Otherwise, a sample with higher coverage could appear to have more enrichment than another sample. Thus, we need to normalize our samples before we create bigWigs or call peaks. 
+**Normalizing** is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample that we submit for sequencing, but in reality that is not the case. To create maningful visualizations ($$\textnormal{\color{gold}bigWig}$$ tracks) and robustly identify enrichment ($$\textnormal{\color{violet}peak}$$ calling with MACS2, SEACR) between samples, we need to start with samples that have equal sequencing coverage. Otherwise, a sample with higher coverage could appear to have more enrichment than another sample. Thus, we need to normalize our samples before we create $$\textnormal{\color{gold}bigWig}$$ or call $$\textnormal{\color{violet}peaks}$$. 
 
 There are several ways to normalize depending on your data type and different types of normalization can be used to address different concerns. 
-For ChIP-seq:
-+ normalize to spike-in control
-  ++ a spike-in control normalizes for differences in library preparation and sequencing outside of biological vairation between samples
-+ normalize to input sample
-  ++ an input sample is a control for background binding and tells us what part of a sample's enrichment is not due to randomness
 
-For CUT&RUN:
-+ normalize to a spike-in control
+For $$\textnormal{\color{aqua}ChIP-seq}$$:
++ normalize to spike-in control
+  + a spike-in control normalizes for differences in library preparation and sequencing outside of biological vairation between samples
++ normalize to input sample
+  + an input sample is a control for background binding and tells us what part of a sample's enrichment is not due to randomness
+
+For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
++ normalize to spike-in control
   + again, normalize for differences in library preparation and sequencing
 + normalize to a - control sample (like an input)
   + again, controlling for background levels
@@ -91,7 +92,7 @@ For CUT&RUN:
 **In general, the steps for normalizing are:**
 1) Align your sequencing reads to the spike-in genome
 2) Count total reads aligned to spike-in genome for each sample
-  +  Optionally count total sequencing coverage*
+    +  Optionally count total sequencing coverage*
 4) Calculate scaling factors for each sample
 5) Apply scaling factors to samples and control
 
