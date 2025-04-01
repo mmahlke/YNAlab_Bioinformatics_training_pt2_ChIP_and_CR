@@ -28,7 +28,7 @@ Enrichment signal amplified | Detects small signals and noise
 
 </div>
 <br />
-In the end, both ChIP-seq and CUT&RUN DNA libraries will be sequenced and follow a similar path for analysis. Let's comapre the analysis steps:
+In the end, both $$\textnormal{\color{darkorange}CRC ecosystem}$$ ChIP-seq and CUT&RUN DNA libraries will be sequenced and follow a similar path for analysis. Let's comapre the analysis steps:
 <br />
 <br />
 <div align="center">
