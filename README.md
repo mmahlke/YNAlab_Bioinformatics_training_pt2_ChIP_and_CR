@@ -51,9 +51,14 @@ Visualize tracks and peaks (IGV, UCSC) | Visualize tracks and peaks (IGV, UCSC)
 ## Analyzing ChIP-seq and CUT&RUN data
 In our last training session, our final task was to submit a $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ file for alignment. We will continue to work on that file today, but we will also grab some files to work with alongside it. 
 
-+ a PD-NC4 ChIP-seq file
 + two additional PD-NC4 CUT&RUN files
+  + each file has been converted to bam format, sorted, and indexed
+  + each bam file comes with it's own index (.bai)   
 + a CUT&RUN -control file
++ Each file has also been aligned to the E. coli genome assembly to generate a .sam file
+  + these files have also been converted to bam format, sorted, and indexed
+ 
+To view all of the steps taken for gathering these files, check here: <insert link to script> 
 
 Let's request a session on the cluster and grab the files with these commands:
 ```
@@ -62,9 +67,9 @@ srun -t 2:00:00 --cluster htc --partition htc --spus-per-task 16 --pty bash
 cd /path/to/your/working/directory
 
 cp <file_path> <destination>
-cp <file_path> <destination>
+
 ```
-And now we have them in our own working directory. These are five different files that have all been aligned to the same genome assembly (hg38p.14).
+And now we have them in our own working directory. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly.
 
 Great, we have these aligned files but we can't see anything. Let's generate something we can see. We can visualize read alignment using $$\textnormal{\color{gold}bigWig}$$ tracks. $$\textnormal{\color{gold}BigWig}$$ is a type of compressed, indexed, binary format used to efficiently store and visualize genome-wide signal data, like read coverage or signal intensity, in genome browsers. It's useful because it allows a browser to call to parts of the file at a time rather than loading the very large dataset across the entire genome. So let's generate some $$\textnormal{\color{gold}bigWig}$$ tracks for our files.
 
@@ -96,7 +101,32 @@ For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
 4) Calculate scaling factors for each sample
 5) Apply scaling factors to samples and control
 
+What is a spike-in control? It's a small ammount of DNA form another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our CUT&RUN samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. To see more detail about performing the alignments to E.coli, look here <insert link to script>
 
-Let's assess our samples and calculate normalization ratios.
+Let's assess our samples and calculate normalization ratios. First, check where we are and load our modules. 
+```
+pwd
+
+module load gcc/8.2.0
+module load samtools/1.14
 ```
 
+We can use ```samtools stats``` command to return statistics about our Ecoli.bam files, including the number of mapped reads. 
+
+```
+samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
+samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
+samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
+```
+
+Now we can view the stats reports and create a table for our samples coverage.
+
+Sample            |  Mapped Reads | Normalization ratio | Scaling factor
+:-------------------------:|:-------------------------:|:---:|:---:|
+PDNC4_test | XXXX | 0.3 |
+C4Y | XXXX | .5 |
+E2_12m  | XXXX | 1 |
+
+When calculating the ratios, always set the sample with the lowest coverage to 1 and make it's # of mapped reads the denominator for scaling all other samples. It's always better to scale down your existing data than to scale up, creating non-existent arbitrary data. 
+
+Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. 
