@@ -101,7 +101,7 @@ For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
 4) Calculate scaling factors for each sample
 5) Apply scaling factors to samples and control
 
-What is a spike-in control? It's a small ammount of DNA form another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our CUT&RUN samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. To see more detail about performing the alignments to E.coli, look here <insert link to script>
+What is a spike-in control? It's a small ammount of DNA form another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our CUT&RUN samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. To see more detail about performing the alignments to E.coli, look [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/CUT.RUN_training_alignments.bash)
 
 Let's assess our samples and calculate normalization ratios. First, check where we are and load our modules. 
 ```
@@ -143,7 +143,7 @@ bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
 Now download those bigWigs (.bw) to your computer. We will discuss the two ways we can view them. 
 
 First, let's view the bigWigs with IGV (Integrated Genome Viewer). IGV is available as a software you can install or as a website you can visit. Let's visit the website together. 
-https://igv.org/app/
+https://igv.org/app/  
 
 IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
 
