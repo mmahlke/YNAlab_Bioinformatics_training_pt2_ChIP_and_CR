@@ -54,19 +54,31 @@ In our last training session, our final task was to submit a $$\textnormal{\colo
 + two additional PD-NC4 CUT&RUN files
   + each file has been converted to bam format, sorted, and indexed
   + each bam file comes with it's own index (.bai)   
-+ a CUT&RUN -control file
-+ Each file has also been aligned to the E. coli genome assembly to generate a .sam file
-  + these files have also been converted to bam format, sorted, and indexed
++ a CUT&RUN -control file (created for this analysis)
++ Each file has also been aligned to the E. coli genome assembly (more on that below)
+
  
-To view all of the steps taken for gathering these files, check here: <insert link to script> 
+To view all of the steps taken for creating/processing these files, check [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/CUT.RUN_training_alignments.bash).
 
 Let's request a session on the cluster and grab the files with these commands:
 ```
 srun -t 2:00:00 --cluster htc --partition htc --spus-per-task 16 --pty bash
 
+#Set the path to the directory you want to work in, use the actual path to your directory
 cd /path/to/your/working/directory
 
-cp <file_path> <destination>
+#Copy a text file with all the file names we want to get to our current directory '.' is shorthand for current directory location
+#The syntax here is 'copy' 'path to the file you want' 'destination to copy it to'
+cp /ix1/yarbely/Data/list_of_files.txt .
+
+## We are writing a loop (or set of instructions) with 'for' and 'do'
+# We create a variable named FILE, and define the variable as $(look inside ./list_of_files.txt)
+# Copy each file in list_of_files.txt to the distination directory
+
+for FILE in $(cat ./list_of_files.txt)
+do
+    cp ${FILE} /destination/directory
+done
 
 ```
 And now we have them in our own working directory. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly.
@@ -85,23 +97,27 @@ For $$\textnormal{\color{aqua}ChIP-seq}$$:
   + a spike-in control normalizes for differences in library preparation and sequencing outside of biological vairation between samples
 + normalize to input sample
   + an input sample is a control for background binding and tells us what part of a sample's enrichment is not due to randomness
+  + if you have individualized inputs for each sample, you can use them to normalize for IP efficiency 
 
 For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
 + normalize to spike-in control
   + again, normalize for differences in library preparation and sequencing
++ normalize to read coverage
+  + control for IP efficiency or other factors before library prep that may effect final coverage
 + normalize to a - control sample (like an input)
   + again, controlling for background levels
   + without a - control, you can use thresholding to set a background level
 
+What is a spike-in control? It's a small ammount of DNA form another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our CUT&RUN samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. 
 
 **In general, the steps for normalizing are:**
 1) Align your sequencing reads to the spike-in genome
 2) Count total reads aligned to spike-in genome for each sample
-    +  Optionally count total sequencing coverage*
+    +  And total reads aligned to the target genome (hg38p.14)
 4) Calculate scaling factors for each sample
-5) Apply scaling factors to samples and control
+5) Apply scaling factors to samples
+6) Use scaling factors to generate bigWigs and to call peaks
 
-What is a spike-in control? It's a small ammount of DNA form another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our CUT&RUN samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. To see more detail about performing the alignments to E.coli, look [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/CUT.RUN_training_alignments.bash)
 
 Let's assess our samples and calculate normalization ratios. First, check where we are and load our modules. 
 ```
@@ -111,7 +127,7 @@ module load gcc/8.2.0
 module load samtools/1.14
 ```
 
-We can use ```samtools stats``` command to return statistics about our Ecoli.bam files, including the number of mapped reads. 
+We can use ```samtools stats``` command to return statistics about our bam files, including the number of mapped reads. We will perform this for our hg38p.14 alignments and our E.coli alignments.
 
 ```
 samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
@@ -119,7 +135,10 @@ samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
 samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
 ```
 
-Now we can view the stats reports and create a table for our samples coverage.
+Now we can view the stats reports and create a table for our samples coverage. The stats report will look like this:
+
+
+Let's extract the data we need and place that in a table
 
 Sample            |  Mapped Reads | Normalization ratio | Scaling factor
 :-------------------------:|:-------------------------:|:---:|:---:|
