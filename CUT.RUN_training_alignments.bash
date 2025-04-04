@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+#SBATCH --cluster=htc
 #SBATCH --partition=htc
 #SBATCH --time=24:00:00
 #SBATCH --cpus-per-task=16
@@ -7,9 +8,12 @@
 #SBATCH --error=/ix1/yarbely/mam835/training/CR_PDNC4/job.%J.err
 #SBATCH --output=/ix1/yarbely/mam835/training/CR_PDNC4/job.%J.out
 
+##This script shows the steps I took to prepare the other alignments (to hg38p14 and E.coli genomes) for training dataset. 
+#Load required modules
 module load cutadapt/2.10
 module load gcc/8.2.0
 module load bowtie2/2.4.1
+module load samtools/1.14
 
 cd /ix1/yarbely/mam835/training/CR_PDNC4/
 
