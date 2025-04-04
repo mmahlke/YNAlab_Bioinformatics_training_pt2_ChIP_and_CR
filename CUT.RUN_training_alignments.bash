@@ -62,7 +62,7 @@ samtools stats E2_12m_sc_D4.sam > C2_12m_sc_D4_stats.txt
 
 samtools stats PDNC4_test_ecoli.sam > PDNC4_test_ecoli_stats.txt
 samtools stats PDNC4_CA-HJ-LAP_cC4_Y_ecoli.sam > PDNC4_CA-HJ-LAP_cC4_Y_ecoli_stats.txt
-samtools stats C2_12m_sc_D4_ecoli.sam > C2_12m_sc_D4_ecoli_stats.txt
+samtools stats E2_12m_sc_D4_ecoli.sam > E2_12m_sc_D4_ecoli_stats.txt
 
 samtools view -b -h -F 3852 PDNC4_test.sam > PDNC4_test.bam
 samtools sort -o PDNC4_test_sorted.bam PDNC4_test.bam
@@ -75,3 +75,8 @@ samtools index PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam
 samtools view -b -h -F 3852 E2_12m_sc_D4.sam > E2_12m_sc_D4.bam
 samtools sort -o E2_12m_sc_D4_sorted.bam E2_12m_sc_D4.bam
 samtools index E2_12m_sc_D4_sorted.bam
+
+## Making a - control file 
+samtools view -h -b -s 0.01 PDNC4_test_sorted.bam > PDNC4_control.bam
+samtools sort -o PDNC4_control_sorted.bam PDNC4_control.bam
+samtools index PDNC4_control_sorted.bam
