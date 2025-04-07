@@ -81,9 +81,9 @@ do
 done
 
 ```
-And now we have them in our own working directory. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly.
+And now we have them in our own working directory. 
 
-Great, we have these aligned files but we can't see anything. Let's generate something we can see. We can visualize read alignment using $$\textnormal{\color{gold}bigWig}$$ tracks. $$\textnormal{\color{gold}BigWig}$$ is a type of compressed, indexed, binary format used to efficiently store and visualize genome-wide signal data, like read coverage or signal intensity, in genome browsers. It's useful because it allows a browser to access and display only parts of the file at a time rather than loading the very large dataset across the entire genome. So let's generate some $$\textnormal{\color{gold}bigWig}$$ tracks for our files.
+Great, we have these aligned files but we can't see anything. Let's generate something we can see. We can visualize read alignment using $$\textnormal{\color{gold}bigWig}$$ tracks. $$\textnormal{\color{gold}BigWig}$$ is a type of compressed, indexed, binary format used to efficiently store and visualize genome-wide signal data, like read coverage or signal intensity, in genome browsers. Genome browsers are interactive interfaces for genomic data. $$\textnormal{\color{gold}BigWig}$$ tracks useful because they allow a browser to access and display only parts of the file at a time rather than loading the very large dataset across the entire genome. So let's generate some $$\textnormal{\color{gold}bigWig}$$ tracks for our files.
 
 Before we start, it's important to think about how we will **normalize** our files. Normalizing files, calling $$\textnormal{\color{violet}peaks}$$, and creating $$\textnormal{\color{gold}bigWig}$$ tracks are intertwined.
 
@@ -184,6 +184,10 @@ Let's load all of our $$\textnormal{\color{gold}bigWig}$$ files onto IGV. You ca
 
 Let's look at Chromosome 4 and let's set the scale of each track to be the same (0-60) so we can get a clearer view of the data. 
 
+If you recall, we anticipated CA/HJ_LAP_C4Y to have more CENP-A than PDNC4_test. At CEN4, the position and abundance of CENP-A look similar between these two samples. E2_12m_scD4 actually looks to have more CENP-A reads piled up at CEN4, but remember that we scaled the other two samples down to match with scD4. Normalizing is not perfect.
+
+If we look at NeoCEN4, we see that PDNC4_test has a strong 3 peaks CENP-A signal, with CENP-A/HJURP overexpression in CA/HJ_LAP_C4Y having a destabilizing effect on NeoCEN4. Interestingly, E2_12m_scD4 also has low CENP-A that is spreading from the 3 peaks position. 
+
 We can compare CENP-A position/abundance and see how it changes, but how can we tell if the changes are significant? We do that by calling $$\textnormal{\color{violet}peaks}$$. 
 
 There are two different modules we will use to call $$\textnormal{\color{violet}peaks}$$. One is ```MACS2``` and the other is ```SEACR```. ```MACS2``` is a $$\textnormal{\color{violet}peak}$$ caller suitable for $$\textnormal{\color{aqua}ChIP-seq}$$ but ```SEACR``` is designed for calling $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ $$\textnormal{\color{violet}peaks}$$.
@@ -206,9 +210,16 @@ Now we call peaks on the normalized bam files with ```MACS2```.
 ```
 module load macs/2.2.7.1
 
-macs2 callpeak -t PDNC4_test_macs.bam -c PDNC4_control_sorted.bam -n PDNC4_test_10-6 -f BAMPE -g 3.1e9 -q 0.0001
-macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c -n PDNC4_CA-HJ-LAP_cG1_Y_sc_pdnc4_nl_10-6 -f BAMPE --nolambda -g 3.1e9 -q 0.0001
-macs2 callpeak -t PDNC4_CA-HJ-LAP_cG1_Y_sc_pdnc4_macs.bam -c -n PDNC4_CA-HJ-LAP_cG1_Y_sc_pdnc4_nl_10-6 -f BAMPE --nolambda -g 3.1e9 -q 0.0001
+mkdir ./macs2_peaks
+
+macs2 callpeak -t PDNC4_test_macs.bam -c Neg_control.bam -n PDNC4_test_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t PDNC4_test_macs.bam -n PDNC4_test_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
+
+macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c Neg_control.bam -n CA-HJ-LAP_cC4_Y_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -n CA-HJ-LAP_cC4_Y_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
+
+macs2 callpeak -t E2_12m_scD4_sorted.bam -c Neg_control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t E2_12m_scD4_sorted.bam -n E2_12m_scD4_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
 ```
 Here:
@@ -278,31 +289,56 @@ module load bedtools/2.29.0
 
 #First, we convert the bam file to a bed file
 
-bedtools bamtobed -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sorted.bam > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed
+bedtools bamtobed -i PDNC4_test_sorted.bam > PDNC4_test_seacr.bed
+
+#Check that 
+awk '$1==$4 && $6-$2 < 1000 {print $0}' PDNC4_test_seacr.bed > PDNC4_test_seacr.nzr.bed
 
 #Now we are selecting the information from the bed file that we want to keep, sorting it and sending the output to a new bed file
 
-cut -f 1,2,3,5 PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed
+cut -f 1,2,3,5 PDNC4_test_seacr.nzr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_test_seacr.clean.bed
 
 #Next we are scaling the clean bed file using our calculated scaling factor and the size of the genome we aligned to, then sending the output to a bedgraph format
 ## Bedgraph format is the required file format for peak calling with SEACR 
 
-bedtools genomecov -bg -scale 0.830699709 -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed -g /bgfs/yarbely/Data/Altemose_Oneill/PDNC4/PDNC4.hifiasm.v0.16.1_V2-2022NOV_singleLine.fasta > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph
+bedtools genomecov -bg -scale 0.458 -i PDNC4_test_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > PDNC4_test_seacr.bedgraph
 
 #Now, repeat for the other two files
 ### Remember that the last file will not be scaled, so remove the -scale option
 
-#
-bedtools bamtobed -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sorted.bam > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed
-cut -f 1,2,3,5 PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed
-bedtools genomecov -bg -scale 0.830699709 -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed -g /bgfs/yarbely/Data/Altemose_Oneill/PDNC4/PDNC4.hifiasm.v0.16.1_V2-2022NOV_singleLine.fasta > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph
+#CA-HJ-LAP_cC4
+bedtools bamtobed -i PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_seacr.bed
+awk '$1==$4 && $6-$2 < 1000 {print $0}' CA-HJ-LAP_cC4_seacr.bed > CA-HJ-LAP_cC4_seacr.nzr.bed
+cut -f 1,2,3,5 CA-HJ-LAP_cC4_seacr.nzr.bed | sort -k1,1 -k2,2n -k3,3n > CA-HJ-LAP_cC4_seacr.clean.bed
+bedtools genomecov -bg -scale 0.399 -i CA-HJ-LAP_cC4_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > CA-HJ-LAP_cC4_seacr.bedgraph
 
-#
-bedtools bamtobed -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sorted.bam > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed
-cut -f 1,2,3,5 PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed
-bedtools genomecov -bg -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed -g /bgfs/yarbely/Data/Altemose_Oneill/PDNC4/PDNC4.hifiasm.v0.16.1_V2-2022NOV_singleLine.fasta > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph
+#E2_12m_scD4
+bedtools bamtobed -i E2_12m_sc_D4_sorted.bam > E2_12m_sc_D4_seacr.bed
+awk '$1==$4 && $6-$2 < 1000 {print $0}' $sample.bed > $sample.clean.bed
+cut -f 1,2,3,5 E2_12m_sc_D4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > E2_12m_sc_D4_seacr.clean.bed
+bedtools genomecov -bg -i E2_12m_sc_D4_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > E2_12m_sc_D4_seacr.bedgraph
+
+```
+Now we are ready to call peaks with ```SEACR```. 
+
+```
+module load seacr/1.3
+
+#With a -control
+SEACR_1.3.sh PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph  norm stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
+#Without a -control
+SEACR_1.3.sh PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph 0.00001 non stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
 
 
 ```
+
+
+
+
+
+Now let's download our ```SEACR``` peaks and upload them to IGV. ```SEACR``` peaks are a simple file structure. 
+
+
+
 IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
 
