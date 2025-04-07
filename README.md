@@ -130,12 +130,10 @@ We can use ```samtools stats``` command to return statistics about our sam/bam f
 
 ```
 samtools stats PDNC4_test.sam > PDNC4_test_stats.txt
-samtools stats PDNC4_control.bam > PDNC4_control_stats.txt
 samtools stats PDNC4_CA-HJ-LAP_cC4_Y.sam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
 samtools stats E2_12m_sc_D4.sam > E2_12m_sc_D4_stats.txt
 
 samtools stats PDNC4_test_ecoli.sam > PDNC4_test_ecoli_stats.txt
-samtools stats PDNC4_control_ecoli.bam > PDNC4_control_ecoli_stats.txt
 samtools stats PDNC4_CA-HJ-LAP_cC4_Y_ecoli.sam > PDNC4_CA-HJ-LAP_cC4_Y_ecoli_stats.txt
 samtools stats E2_12m_sc_D4_ecoli.sam > E2_12m_sc_D4_ecoli_stats.txt
 ```
@@ -157,34 +155,37 @@ When calculating the ratios, always set the sample with the lowest coverage to 1
 When we look at the ratios and scaling factors here, what do we interpret? We can see:
 
 + E2_12m_scD4 encountered errors or struggled during library prep, because the ratio of E.coli spike-in to total reads is much lower than the other two samples
-  + This is unlikely to reflect a biological difference
+  + This is unlikely to reflect a biological difference, even though the sample also has less mapped reads to hg38p.14
   + Biological increase or decrease in target protein should not affect the number of E.coli reads present in the sample
 + While the ratio between E.coli and hg38p.14 reads is similar between PDNC4_test and CA/HJ_LAP_C4Y, CA/HJ_LAP_C4Y has more target protein reads
   + We expect this because it is overexpressing CENP-A
   + We see that the calculated ratio will downsample CA/HJ_LAP_C4Y the **most** to bring it to a level comparable to E2_12m_scD4
   + This will allow us to see if there is a real biological difference or just higher sequencing coverage      
 
-Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. Excellent documentation for this package can be found [here](https://deeptools.readthedocs.io/en/latest/content/list_of_tools.html).
+Now we have the scaling factors and we can use them to create normalized $$\textnormal{\color{gold}bigWig}$$ tracks with ```deeptools```. Excellent documentation for this package can be found [here](https://deeptools.readthedocs.io/en/latest/content/list_of_tools.html).
 
-Let's load our modules and run the command to make a bigWig track for each of our samples.
+Let's load our modules and run the command to make a $$\textnormal{\color{gold}bigWig}$$ track for each of our samples.
 ```
 module purge
 module load deeptools/3.3.0
 
-bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
-bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
-bamCoverage -b BBB_cG1_sorted.bam -o BBB_cG1.bw --scaleFactor 1 -p max/2
+bamCoverage -b PDNC4_test_sorted.bam -o PDNC4_test.bw --scaleFactor 0.458 -p max/2
+bamCoverage -b PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam -o CA-HJ-LAP_C4Y.bw --scaleFactor 0.399 -p max/2
+bamCoverage -b E2_12m_sc_D4_sorted.bam -o E2_12m_sc_D4.bw --scaleFactor 1 -p max/2
 ```
-Now download those bigWigs (.bw) to your computer. We will discuss the two ways we can view them. 
+Now download those $$\textnormal{\color{gold}bigWigs}$$ (.bw) to your computer. We will discuss two ways we can view them. 
 
-First, let's view the bigWigs with IGV (Integrated Genome Viewer). IGV is available as a software you can install or as a website you can visit. Let's visit the website together. 
-https://igv.org/app/  
+First, let's view the $$\textnormal{\color{gold}bigWigs}$$ with IGV (Integrated Genome Viewer). IGV is available as a software you can install or as a website you can visit. Let's visit the [website](https://igv.org/app/) together.  
 
-IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
+IGV web app has support for some genomes like hg38. If you are using a unique genome, you can upload that reference to IGV before viewing your $$\textnormal{\color{gold}bigWig}$$ files. 
 
-Let's load all of our bigWig files onto IGV and take a look at Chr4. You can scroll around and look at the data across the entire genome. These CUT&RUN for CENP-A should show enrichment at the centromeres and at NeoCEN4 on Chr4. Here's a snapshot of the data at NeoCEN4:
+Let's load all of our $$\textnormal{\color{gold}bigWig}$$ files onto IGV. You can scroll around and look at the data across the entire genome. These $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ for CENP-A should show enrichment at the centromeres and at NeoCEN4 on Chr4. Here's a snapshot of the data genome-wide:
+![CENP-A genome-wide](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/IGV_snap.png)
 
+Let's look at Chromosome 4 and let's set the scale of each track to be the same so we can get a clearer view of the data. 
 
 We can compare CENP-A position and see how it changes, but how can we tell if the changes are significant? We do that by calling peaks. 
 
+
+IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
 
