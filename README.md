@@ -218,8 +218,8 @@ macs2 callpeak -t PDNC4_test_macs.bam -n PDNC4_test_10-6 -f BAMPE --nolambda --o
 macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c Neg_control.bam -n CA-HJ-LAP_cC4_Y_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -n CA-HJ-LAP_cC4_Y_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
-macs2 callpeak -t E2_12m_scD4_sorted.bam -c Neg_control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
-macs2 callpeak -t E2_12m_scD4_sorted.bam -n E2_12m_scD4_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
+macs2 callpeak -t E2_12m_sc_D4_sorted.bam -c Neg_control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t E2_12m_sc_D4_sorted.bam -n E2_12m_scD4_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
 ```
 Here:
@@ -279,6 +279,8 @@ PDNC4_test_10-6_summits.bed:
 5) score - same as the narrowpeak value 5
 
 Let's download our .narrowPeak files and upload them to IGV to look at the distribution of peaks. You should see that calling without a - control using MACS2 allows for very generous peak calling even with a stringent q-value. Calling with a - control provides more control on peak calling. 
+
+You can also see that peak calling can perform differently based on the context. It behaves one way at CEN4 and another way at NeoCEN4. Keep that in mind. 
 
 Now let's see how ```SEACR``` performs when calling peaks on these same samples. See the documentation for ```SEACR``` [here](https://github.com/FredHutch/SEACR).
 
