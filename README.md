@@ -289,16 +289,15 @@ First, we need to prepare our files for peak calling with ```SEACR```.
 ```
 module load bedtools/2.29.0
 
+mkdir ./seacr_peaks
+
 #First, we convert the bam file to a bed file
 
-bedtools bamtobed -i PDNC4_test_sorted.bam > PDNC4_test_seacr.bed
-
-#Check that 
-awk '$1==$4 && $6-$2 < 1000 {print $0}' PDNC4_test_seacr.bed > PDNC4_test_seacr.nzr.bed
+bedtools bamtobed -bedpe -i PDNC4_test_sorted.bam > PDNC4_test_seacr.bed
 
 #Now we are selecting the information from the bed file that we want to keep, sorting it and sending the output to a new bed file
 
-cut -f 1,2,3,5 PDNC4_test_seacr.nzr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_test_seacr.clean.bed
+cut -f 1,2,3,5 PDNC4_test_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_test_seacr.clean.bed
 
 #Next we are scaling the clean bed file using our calculated scaling factor and the size of the genome we aligned to, then sending the output to a bedgraph format
 ## Bedgraph format is the required file format for peak calling with SEACR 
@@ -310,13 +309,11 @@ bedtools genomecov -bg -scale 0.458 -i PDNC4_test_seacr.clean.bed -g ./GCF_00000
 
 #CA-HJ-LAP_cC4
 bedtools bamtobed -i PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_seacr.bed
-awk '$1==$4 && $6-$2 < 1000 {print $0}' CA-HJ-LAP_cC4_seacr.bed > CA-HJ-LAP_cC4_seacr.nzr.bed
-cut -f 1,2,3,5 CA-HJ-LAP_cC4_seacr.nzr.bed | sort -k1,1 -k2,2n -k3,3n > CA-HJ-LAP_cC4_seacr.clean.bed
+cut -f 1,2,3,5 CA-HJ-LAP_cC4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > CA-HJ-LAP_cC4_seacr.clean.bed
 bedtools genomecov -bg -scale 0.399 -i CA-HJ-LAP_cC4_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > CA-HJ-LAP_cC4_seacr.bedgraph
 
 #E2_12m_scD4
 bedtools bamtobed -i E2_12m_sc_D4_sorted.bam > E2_12m_sc_D4_seacr.bed
-awk '$1==$4 && $6-$2 < 1000 {print $0}' $sample.bed > $sample.clean.bed
 cut -f 1,2,3,5 E2_12m_sc_D4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > E2_12m_sc_D4_seacr.clean.bed
 bedtools genomecov -bg -i E2_12m_sc_D4_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > E2_12m_sc_D4_seacr.bedgraph
 
@@ -327,20 +324,41 @@ Now we are ready to call peaks with ```SEACR```.
 module load seacr/1.3
 
 #With a -control
-SEACR_1.3.sh PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph  norm stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph Neg_control norm stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
 #Without a -control
 SEACR_1.3.sh PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph 0.00001 non stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
 
 
 ```
+ ```SEACR``` peaks are named either <output prefix>.stringent.bed OR <output prefix>.relaxed.bed depending on the parameters in the original command. ```SEACR``` peaks also have a simple format:
+1) Chromosome
+2) Start coordinate
+3) End coordinate
+4) Total signal contained within denoted coordinates
+5) Maximum bedgraph signal attained at any base pair within denoted coordinates
+6) Region representing the farthest upstream and farthest downstream bases within the denoted coordinates that are represented by the maximum bedgraph signal
 
+Now let's download our ```SEACR``` peaks and upload them to IGV. We can see that the peaks are quite different between these two methods. 
 
+**Takehome:** peak calling is an art. You need to select the right peak calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy.
 
+Ok, so we did it!! 
 
-
-Now let's download our ```SEACR``` peaks and upload them to IGV. ```SEACR``` peaks are a simple file structure. 
-
-
+We made tracks and we called peaks with ```MACS2``` and with ```SEACR```. The last thing we need to know how to do is to share this data interactively with others in a *pleasant* way. We can do that by setting up a track session on UCSC genome browser. 
 
 IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
+
+You might be wondering at some point, Why the heck do I need to use this ridiculous browser? I'll just use IGV of course, it's simple! 
+
+**Here are some scenarios where you will need to use UCSC browser:**
++ share tracks to others without requiring others to manually load all your bigWigs and bed files and put them in an order that makes sense
++ share tracks to others while preserving colors, scaling, and other options you like for your data
+ + Or for yourself! It's a lot of work to get all the settings right and then lose it when you close IGV 
+-create publicly available hubs when publishing so others can interactively look through your data
+
+With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload bigWig files. Instead, you need to find a remote host to store your bigWig files and then direct UCSC genome browser to access your files at the remote server. 
+
+I use 
+
+
 
