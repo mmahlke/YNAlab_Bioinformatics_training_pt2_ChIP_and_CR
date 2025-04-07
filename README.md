@@ -202,7 +202,7 @@ samtools view -h -b -s 0.399 PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_Y_
 
 ## For E2_12m_scD4, we set the scale factor to 1, so we do not need to downsample and prepare a new .bam file
 ```
-Now we call peaks on the normalized bam files with MACS2.
+Now we call peaks on the normalized bam files with ```MACS2```.
 ```
 module load macs/2.2.7.1
 
@@ -216,15 +216,22 @@ Here:
 + -n is the name for the output prefix
 + -f is the format, here bam paired-end
 + -c is the control file
-+ --nolambda inactivates dynamic lambda background detection
++ --nolambda inactivates dynamic lambda background detection (suggested for CUT&RUN)
 + -g is the genome size
 + -q is the q-value
 
-We are using a very stringent q-value threshold to call peaks. The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value, with a lower q-value indicating a more significant peak. A q-value of 0.05, for example, means that 5% of the called peaks are expected to be false positive. Here, we specify that 0.01% of called peaks are expected to be false positives. For ChIP-seq, we have used q-value up to 10^-6 to very stringently call centromeric CENP-A peaks. 
+The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value, with a lower q-value indicating a more significant peak. A q-value of 0.05, for example, means that 5% of the called peaks are expected to be false positive. 
+
+To illustrate how peak calling parameters affect the output of called peaks, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call peaks ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold (
 
 We have also turned off ```MACS2``` local dynamic lambda, which samples the background at each candidate peak. CUT&RUN can have a lot of background noise which can reduce peak calling with active dynamic lambda. See [here](https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html) for more information about MACS2 lambda and sliding window peak calling algorithm.
 
 MACS2 will give three output files all named with the prefix you specified in the ```callpeak``` command:
 + 
+
+
+
+Let's look at our peak files spreadsheet content. 
+
 IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
 
