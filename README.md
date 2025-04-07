@@ -358,7 +358,11 @@ You might be wondering at some point, Why the heck do I need to use this ridicul
 
 With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload bigWig files. Instead, you need to find a remote host to store your bigWig files and then direct UCSC genome browser to access your files at the remote server. 
 
-I use 
+I use Cyverse to host my bigWig tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many hubs, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. 
+
+First, let's upload our bigWigs to our Cyverse space. 
+
+
 
 
 
