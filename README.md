@@ -69,7 +69,7 @@ cd /path/to/your/working/directory
 
 #Copy a text file with all the file names we want to get to our current directory '.' is shorthand for current directory location
 #The syntax here is 'copy' 'path to the file you want' 'destination to copy it to'
-cp /ix1/yarbely/Data/list_of_files.txt .
+cp /ix1/yarbely/Data/Training/list_of_files.txt .
 
 ## We are writing a loop (or set of instructions) with 'for' and 'do'
 # We create a variable named FILE, and define the variable as $(look inside ./list_of_files.txt)
@@ -77,18 +77,18 @@ cp /ix1/yarbely/Data/list_of_files.txt .
 
 for FILE in $(cat ./list_of_files.txt)
 do
-    cp ${FILE} /destination/directory
+    cp ${FILE} .
 done
 
 ```
 And now we have them in our own working directory. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly.
 
-Great, we have these aligned files but we can't see anything. Let's generate something we can see. We can visualize read alignment using $$\textnormal{\color{gold}bigWig}$$ tracks. $$\textnormal{\color{gold}BigWig}$$ is a type of compressed, indexed, binary format used to efficiently store and visualize genome-wide signal data, like read coverage or signal intensity, in genome browsers. It's useful because it allows a browser to call to parts of the file at a time rather than loading the very large dataset across the entire genome. So let's generate some $$\textnormal{\color{gold}bigWig}$$ tracks for our files.
+Great, we have these aligned files but we can't see anything. Let's generate something we can see. We can visualize read alignment using $$\textnormal{\color{gold}bigWig}$$ tracks. $$\textnormal{\color{gold}BigWig}$$ is a type of compressed, indexed, binary format used to efficiently store and visualize genome-wide signal data, like read coverage or signal intensity, in genome browsers. It's useful because it allows a browser to access and display only parts of the file at a time rather than loading the very large dataset across the entire genome. So let's generate some $$\textnormal{\color{gold}bigWig}$$ tracks for our files.
 
 Before we start, it's important to think about how we will **normalize** our files. Normalizing files, calling $$\textnormal{\color{violet}peaks}$$, and creating $$\textnormal{\color{gold}bigWig}$$ tracks are intertwined.
 
 ## Normalizing files for analysis
-**Normalizing** is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample that we submit for sequencing, but in reality that is not the case. To create maningful visualizations ($$\textnormal{\color{gold}bigWig}$$ tracks) and robustly identify enrichment ($$\textnormal{\color{violet}peak}$$ calling with MACS2, SEACR) between samples, we need to start with samples that have equal sequencing coverage. Otherwise, a sample with higher coverage could appear to have more enrichment than another sample. Thus, we need to normalize our samples before we create $$\textnormal{\color{gold}bigWig}$$ or call $$\textnormal{\color{violet}peaks}$$. 
+**Normalizing** is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample that we submit for sequencing, but in reality that is not the case. To create maningful visualizations ($$\textnormal{\color{gold}bigWig}$$ tracks) and robustly identify enrichment ($$\textnormal{\color{violet}peak}$$ calling with MACS2, SEACR) between samples, we need to start with samples that have been adjusted to control for technical variability. Thus, we need to normalize our samples before we create $$\textnormal{\color{gold}bigWig}$$ or call $$\textnormal{\color{violet}peaks}$$. 
 
 There are several ways to normalize depending on your data type and different types of normalization can be used to address different concerns. 
 
@@ -108,18 +108,17 @@ For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
   + again, controlling for background levels
   + without a - control, you can use thresholding to set a background level
 
-What is a spike-in control? It's a small ammount of DNA form another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our CUT&RUN samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. 
+What is a spike-in control? It's a small ammount of DNA from another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. 
 
 **In general, the steps for normalizing are:**
-1) Align your sequencing reads to the spike-in genome
-2) Count total reads aligned to spike-in genome for each sample
-    +  And total reads aligned to the target genome (hg38p.14)
+1) Align your sequencing reads to the target genome
+2) Align your sequencing reads to the spike-in genome
+3) Count total reads aligned to the target and spike-in genomes
 4) Calculate scaling factors for each sample
-5) Apply scaling factors to samples
-6) Use scaling factors to generate bigWigs and to call peaks
+5) Use scaling factors to generate bigWigs and to call peaks
 
 
-Let's assess our samples and calculate normalization ratios. First, check where we are and load our modules. 
+Let's assess our samples and calculate scaling factors. First, check where we are and load our modules. 
 ```
 pwd
 
@@ -127,18 +126,24 @@ module load gcc/8.2.0
 module load samtools/1.14
 ```
 
-We can use ```samtools stats``` command to return statistics about our bam files, including the number of mapped reads. We will perform this for our hg38p.14 alignments and our E.coli alignments.
+We can use ```samtools stats``` command to return statistics about our sam/bam files, including the number of mapped reads. We will perform this for our hg38p.14 alignments and our E.coli alignments.
 
 ```
-samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
-samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
-samtools stats PDNC4_test_Ec_sorted.bam > PDNC4_test_stats.txt
+samtools stats PDNC4_test.sam > PDNC4_test_stats.txt
+samtools stats PDNC4_control.bam > PDNC4_control_stats.txt
+samtools stats PDNC4_CA-HJ-LAP_cC4_Y.sam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
+samtools stats E2_12m_sc_D4.sam > E2_12m_sc_D4_stats.txt
+
+samtools stats PDNC4_test_ecoli.sam > PDNC4_test_ecoli_stats.txt
+samtools stats PDNC4_control_ecoli.bam > PDNC4_control_ecoli_stats.txt
+samtools stats PDNC4_CA-HJ-LAP_cC4_Y_ecoli.sam > PDNC4_CA-HJ-LAP_cC4_Y_ecoli_stats.txt
+samtools stats E2_12m_sc_D4_ecoli.sam > E2_12m_sc_D4_ecoli_stats.txt
 ```
 
 Now we can view the stats reports and create a table for our samples coverage. The stats report will look like this:
+![Samtools stats example output](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Stats_example.png)
 
-
-Let's extract the data we need and place that in a table
+Let's extract the data we need and place that in a table. For you own analysis, you should prepare separate normalization tables for any groups of samples you want to compare. 
 
 Sample            |  Mapped Reads | Normalization ratio | Scaling factor
 :-------------------------:|:-------------------------:|:---:|:---:|
