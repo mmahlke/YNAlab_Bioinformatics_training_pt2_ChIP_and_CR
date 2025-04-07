@@ -222,9 +222,9 @@ Here:
 
 The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value, with a lower q-value indicating a more significant peak. A q-value of 0.05, for example, means that 5% of the called peaks are expected to be false positive. 
 
-To illustrate how peak calling parameters affect the output of called peaks, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call peaks ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold (
-
 We have also turned off ```MACS2``` local dynamic lambda, which samples the background at each candidate peak. CUT&RUN can have a lot of background noise which can reduce peak calling with active dynamic lambda. See [here](https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html) for more information about MACS2 lambda and sliding window peak calling algorithm.
+
+To illustrate how peak calling parameters affect the output of called peaks, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call peaks ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold (
 
 MACS2 will give three output files all named with the prefix you specified in the ```callpeak``` command:
 + _peaks.narrowPeak: BED6+4 format file which contains the peak locations together with peak summit, pvalue and qvalue
@@ -236,7 +236,7 @@ MACS2 will give three output files all named with the prefix you specified in th
 
 I highly recommend taking some time to familiarize yourself with different data format structures [here](https://genome.ucsc.edu/FAQ/FAQformat.html). 
 
-Let's look at our peak files content. 
+Let's look at the content of our peak files. <br/>
 PDNC4_test_10-6_peaks.narrowPeak ([BED6+4 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12)): 
 1) chrom - chromosome name
 2) chromStart - starting position in the chromosome 
@@ -244,10 +244,65 @@ PDNC4_test_10-6_peaks.narrowPeak ([BED6+4 format](https://genome.ucsc.edu/FAQ/FA
 4) name - Name given to a region 
 5) score - integer part of 9th (+3) column (-log10qvalue) multiplied by 10. int(-10*log10qvalue) Indicates how dark the peak will be displayed in the browser (0-1000)
 6) strand - +/- to denote strand or orientation, or "." if no orientation is assigned
-+1) signalValue - Measurement of overall (average) enrichment for the region
-+2) pValue - Measurement of statistical significance (-log10). Use -1 if no pValue is assigned.
-+3) qValue - Measurement of statistical significance using false discovery rate (-log10). Use -1 if no qValue is assigned.
-+4) peak - Peak summit; part of peak with highest count
+1) signalValue - Measurement of overall (average) enrichment for the region
+2) pValue - Measurement of statistical significance (-log10). Use -1 if no pValue is assigned.
+3) qValue - Measurement of statistical significance using false discovery rate (-log10). Use -1 if no qValue is assigned.
+4) peak - Peak summit; part of peak with highest count
 
+PDNC4_test_10-6_peaks.xls: 
+1) chromosome name
+2) start position of peak
+3) end position of peak
+4) length of peak region
+5) absolute peak summit position
+6) pileup height at peak summit
+7) -log10(pvalue) for the peak summit (e.g. pvalue =1e-10, then this value should be 10)
+8) fold enrichment for this peak summit against random Poisson distribution with **local lambda**
+9) -log10(qvalue) at peak summit
+
+PDNC4_test_10-6_summits.bed: 
+1) chromosome name
+2) start position of summit
+3) end position of summit
+4) length of summit region
+5) score - same as the narrowpeak value 5
+
+Let's download our .narrowPeak files and upload them to IGV to look at the distribution of peaks. You should see that calling without a - control using MACS2 allows for very generous peak calling even with a stringent q-value. Calling with a - control provides more control on peak calling. 
+
+Now let's see how ```SEACR``` performs when calling peaks on these same samples. See the documentation for ```SEACR``` [here](https://github.com/FredHutch/SEACR).
+
+First, we need to prepare our files for peak calling with ```SEACR```.
+
+```
+module load bedtools/2.29.0
+
+#First, we convert the bam file to a bed file
+
+bedtools bamtobed -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sorted.bam > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed
+
+#Now we are selecting the information from the bed file that we want to keep, sorting it and sending the output to a new bed file
+
+cut -f 1,2,3,5 PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed
+
+#Next we are scaling the clean bed file using our calculated scaling factor and the size of the genome we aligned to, then sending the output to a bedgraph format
+## Bedgraph format is the required file format for peak calling with SEACR 
+
+bedtools genomecov -bg -scale 0.830699709 -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed -g /bgfs/yarbely/Data/Altemose_Oneill/PDNC4/PDNC4.hifiasm.v0.16.1_V2-2022NOV_singleLine.fasta > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph
+
+#Now, repeat for the other two files
+### Remember that the last file will not be scaled, so remove the -scale option
+
+#
+bedtools bamtobed -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sorted.bam > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed
+cut -f 1,2,3,5 PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed
+bedtools genomecov -bg -scale 0.830699709 -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed -g /bgfs/yarbely/Data/Altemose_Oneill/PDNC4/PDNC4.hifiasm.v0.16.1_V2-2022NOV_singleLine.fasta > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph
+
+#
+bedtools bamtobed -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sorted.bam > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed
+cut -f 1,2,3,5 PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed
+bedtools genomecov -bg -i PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr.clean.bed -g /bgfs/yarbely/Data/Altemose_Oneill/PDNC4/PDNC4.hifiasm.v0.16.1_V2-2022NOV_singleLine.fasta > PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph
+
+
+```
 IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
 
