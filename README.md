@@ -173,7 +173,7 @@ bamCoverage -b PDNC4_test_sorted.bam -o PDNC4_test.bw --scaleFactor 0.458 -p max
 bamCoverage -b PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam -o CA-HJ-LAP_C4Y.bw --scaleFactor 0.399 -p max/2
 bamCoverage -b E2_12m_sc_D4_sorted.bam -o E2_12m_sc_D4.bw --scaleFactor 1 -p max/2
 ```
-Now download those $$\textnormal{\color{gold}bigWigs}$$ (.bw) to your computer. We will discuss two ways we can view them. 
+Now download those $$\textnormal{\color{gold}bigWigs}$$ (.bw) to your computer.  
 
 First, let's view the $$\textnormal{\color{gold}bigWigs}$$ with IGV (Integrated Genome Viewer). IGV is available as a software you can install or as a website you can visit. Let's visit the [website](https://igv.org/app/) together.  
 
@@ -182,10 +182,49 @@ IGV web app has support for some genomes like hg38. If you are using a unique ge
 Let's load all of our $$\textnormal{\color{gold}bigWig}$$ files onto IGV. You can scroll around and look at the data across the entire genome. These $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ for CENP-A should show enrichment at the centromeres and at NeoCEN4 on Chr4. Here's a snapshot of the data genome-wide:
 ![CENP-A genome-wide](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/IGV_snap.png)
 
-Let's look at Chromosome 4 and let's set the scale of each track to be the same so we can get a clearer view of the data. 
+Let's look at Chromosome 4 and let's set the scale of each track to be the same (0-60) so we can get a clearer view of the data. 
 
-We can compare CENP-A position and see how it changes, but how can we tell if the changes are significant? We do that by calling peaks. 
+We can compare CENP-A position/abundance and see how it changes, but how can we tell if the changes are significant? We do that by calling $$\textnormal{\color{violet}peaks}$$. 
 
+There are two different modules we will use to call $$\textnormal{\color{violet}peaks}$$. One is ```MACS2``` and the other is ```SEACR```. ```MACS2``` is a $$\textnormal{\color{violet}peak}$$ caller suitable for $$\textnormal{\color{aqua}ChIP-seq}$$ but ```SEACR``` is designed for calling $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ $$\textnormal{\color{violet}peaks}$$.
 
+When we call peaks with either ```MACS2``` or ```SEACR```, we can use a - control or set a user-defined threshold. For this analysis, we have a - control. 
+
+Let's first call some peacks with ```MACS2```. Please see the documentation for MACS2 [here](https://pypi.org/project/MACS2/).
+To call peaks, we need to prepare **normalized** bam files with the same scale factors we calculated above.
+```
+module purge
+module load gcc/8.2.0
+module load samtools/1.14
+
+samtools view -h -b -s 0.458 PDNC4_test_sorted.bam > PDNC4_test_macs.bam
+samtools view -h -b -s 0.399 PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_Y_macs.bam
+
+## For E2_12m_scD4, we set the scale factor to 1, so we do not need to downsample and prepare a new .bam file
+```
+Now we call peaks on the normalized bam files with MACS2.
+```
+module load macs/2.2.7.1
+
+macs2 callpeak -t PDNC4_test_macs.bam -c PDNC4_control_sorted.bam -n PDNC4_test_10-6 -f BAMPE -g 3.1e9 -q 0.0001
+macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c -n PDNC4_CA-HJ-LAP_cG1_Y_sc_pdnc4_nl_10-6 -f BAMPE --nolambda -g 3.1e9 -q 0.0001
+macs2 callpeak -t PDNC4_CA-HJ-LAP_cG1_Y_sc_pdnc4_macs.bam -c -n PDNC4_CA-HJ-LAP_cG1_Y_sc_pdnc4_nl_10-6 -f BAMPE --nolambda -g 3.1e9 -q 0.0001
+
+```
+Here:
++ -t is the input bam
++ -n is the name for the output prefix
++ -f is the format, here bam paired-end
++ -c is the control file
++ --nolambda inactivates dynamic lambda background detection
++ -g is the genome size
++ -q is the q-value
+
+We are using a very stringent q-value threshold to call peaks. The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value, with a lower q-value indicating a more significant peak. A q-value of 0.05, for example, means that 5% of the called peaks are expected to be false positive. Here, we specify that 0.01% of called peaks are expected to be false positives. For ChIP-seq, we have used q-value up to 10^-6 to very stringently call centromeric CENP-A peaks. 
+
+We have also turned off ```MACS2``` local dynamic lambda, which samples the background at each candidate peak. CUT&RUN can have a lot of background noise which can reduce peak calling with active dynamic lambda. See [here](https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html) for more information about MACS2 lambda and sliding window peak calling algorithm.
+
+MACS2 will give three output files all named with the prefix you specified in the ```callpeak``` command:
++ 
 IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
 
