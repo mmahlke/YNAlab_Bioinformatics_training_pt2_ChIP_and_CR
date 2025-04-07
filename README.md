@@ -141,17 +141,18 @@ samtools stats E2_12m_sc_D4_ecoli.sam > E2_12m_sc_D4_ecoli_stats.txt
 ```
 
 Now we can view the stats reports and create a table for our samples coverage. The stats report will look like this:
+
 ![Samtools stats example output](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Stats_example.png)
 
 Let's extract the data we need and place that in a table. For you own analysis, you should prepare separate normalization tables for any groups of samples you want to compare. 
 
-Sample            |  Mapped Reads | Normalization ratio | Scaling factor
-:-------------------------:|:-------------------------:|:---:|:---:|
-PDNC4_test | XXXX | 0.3 |
-C4Y | XXXX | .5 |
-E2_12m  | XXXX | 1 |
+Sample            |  Mapped Reads hg38p.14 | Mapped reads E.coli | Normalization ratio | Scaling factor
+:-------------------------:|:-------------------------:|:---:|:---:|:---:|
+PDNC4_test | 16093650 | 34046 | 34046/16093650 = 0.00212 | 0.00097/0.00212 = 0.458
+CA/HJ_LAP_C4Y | 23376346 | 56918 | 56918/23376346 = 0.00243 | 0.00097/0.00243 = 0.399
+E2_12m_scD4  | 9628838 | 9342 | 9342/9628838 = 0.00097 | 1
 
-When calculating the ratios, always set the sample with the lowest coverage to 1 and make it's # of mapped reads the denominator for scaling all other samples. It's always better to scale down your existing data than to scale up, creating non-existent arbitrary data. 
+When calculating the ratios, always set the sample with the lowest coverage to 1 and make it's normalization value the numerator when scaling all other samples. It's always better to scale down your existing data than to scale up, creating non-existent arbitrary data. 
 
 Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. Great documentation for this package can be found here.
 
