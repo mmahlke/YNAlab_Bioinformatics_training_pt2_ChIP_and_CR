@@ -146,15 +146,25 @@ Now we can view the stats reports and create a table for our samples coverage. T
 
 Let's extract the data we need and place that in a table. For you own analysis, you should prepare separate normalization tables for any groups of samples you want to compare. 
 
-Sample            |  Mapped Reads hg38p.14 | Mapped reads E.coli | Normalization ratio | Scaling factor
+Sample            |  Mapped Reads hg38p.14 | Mapped Reads E.coli | Normalization Ratio | Scaling Factor
 :-------------------------:|:-------------------------:|:---:|:---:|:---:|
 PDNC4_test | 16093650 | 34046 | 34046/16093650 = 0.00212 | 0.00097/0.00212 = 0.458
 CA/HJ_LAP_C4Y | 23376346 | 56918 | 56918/23376346 = 0.00243 | 0.00097/0.00243 = 0.399
 E2_12m_scD4  | 9628838 | 9342 | 9342/9628838 = 0.00097 | 1
 
-When calculating the ratios, always set the sample with the lowest coverage to 1 and make it's normalization value the numerator when scaling all other samples. It's always better to scale down your existing data than to scale up, creating non-existent arbitrary data. 
+When calculating the ratios, always set the sample with the lowest coverage to 1 and make it's normalization value the numerator when scaling all other samples. It's always better to scale down your existing data than to scale up because scaling up creates non-existent arbitrary data. 
 
-Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. Great documentation for this package can be found here.
+When we look at the ratios and scaling factors here, what do we interpret? We can see:
+
++ E2_12m_scD4 encountered errors or struggled during library prep, because the ratio of E.coli spike-in to total reads is much lower than the other two samples
+  + This is unlikely to reflect a biological difference
+  + Biological increase or decrease in target protein should not affect the number of E.coli reads present in the sample
++ While the ratio between E.coli and hg38p.14 reads is similar between PDNC4_test and CA/HJ_LAP_C4Y, CA/HJ_LAP_C4Y has more target protein reads
+  + We expect this because it is overexpressing CENP-A
+  + We see that the calculated ratio will downsample CA/HJ_LAP_C4Y the **most** to bring it to a level comparable to E2_12m_scD4
+  + This will allow us to see if there is a real biological difference or just higher sequencing coverage      
+
+Now we have the scaling factors and we can use them to create normalized bigWig tracks with ```deeptools```. Excellent documentation for this package can be found [here](https://deeptools.readthedocs.io/en/latest/content/list_of_tools.html).
 
 Let's load our modules and run the command to make a bigWig track for each of our samples.
 ```
