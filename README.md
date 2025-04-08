@@ -162,6 +162,9 @@ When we look at the ratios and scaling factors here, what do we interpret? We ca
   + We see that the calculated ratio will downsample CA/HJ_LAP_C4Y the **most** to bring it to a level comparable to E2_12m_scD4
   + This will allow us to see if there is a real biological difference or just higher sequencing coverage      
 
+
+## Preparing $$\textnormal{\color{gold}bigWig}$$ tracks and visualizing data
+
 Now we have the scaling factors and we can use them to create normalized $$\textnormal{\color{gold}bigWig}$$ tracks with ```deeptools```. Excellent documentation for this package can be found [here](https://deeptools.readthedocs.io/en/latest/content/list_of_tools.html).
 
 Let's load our modules and run the command to make a $$\textnormal{\color{gold}bigWig}$$ track for each of our samples.
@@ -191,7 +194,7 @@ If we look at NeoCEN4, we see that PDNC4_test has a strong 3 peaks CENP-A signal
 We can compare CENP-A position/abundance and see how it changes, but how can we tell if the changes are significant? We do that by calling $$\textnormal{\color{violet}peaks}$$. 
 
 
-## Peak calling
+## $$\textnormal{\color{violet}Peak}$$ calling
 
 There are two different modules we will use to call $$\textnormal{\color{violet}peaks}$$. One is ```MACS2``` and the other is ```SEACR```. ```MACS2``` is a $$\textnormal{\color{violet}peak}$$ caller suitable for $$\textnormal{\color{aqua}ChIP-seq}$$ but ```SEACR``` is designed for calling $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ $$\textnormal{\color{violet}peaks}$$.
 
@@ -379,9 +382,7 @@ Now let's download our ```SEACR``` peaks and upload them to IGV. We can see that
 
 **Takehome:** peak calling is an art. You need to select the right peak calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy.
 
-Ok, so we did it!! 
-
-We made tracks and we called peaks with ```MACS2``` and with ```SEACR```. 
+## Creating track sessions with UCSC Genome Browser
 
 The last thing we need to know how to do is to share this data interactively with others in a *pleasant* way. We can do that by setting up a track session on UCSC genome browser. 
 
