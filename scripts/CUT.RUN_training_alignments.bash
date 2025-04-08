@@ -15,48 +15,48 @@ module load samtools/1.14
 
 cd /ix1/yarbely/mam835/training/CR_PDNC4/
 
-#bowtie2 \
-#	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
-#	-x /ix1/yarbely/mam835/training/CR_PDNC4/h38.p14 \
-#	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R1.fastq \
-#	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R2.fastq \
-#	-S E2_12m_sc_D4.sam
+bowtie2 \
+	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
+	-x /ix1/yarbely/mam835/training/CR_PDNC4/h38.p14 \
+	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R1.fastq \
+	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R2.fastq \
+	-S E2_12m_sc_D4.sam
 
 # If you are wondering why the fastq files are called C2_12m but I named the output as E2_12m, 
 ## it's because once it was sequenced, we discovered there was a mixup between C2 12m and E2 12m cells
 
-#bowtie2 \
-#	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
-#	-x /ix1/yarbely/mam835/training/CR_PDNC4/h38.p14 \
-#	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R2.fastq \
-#	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R1.fastq \
-#	-S PDNC4_CA-HJ-LAP_cC4_Y.sam
+bowtie2 \
+	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
+	-x /ix1/yarbely/mam835/training/CR_PDNC4/h38.p14 \
+	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R2.fastq \
+	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R1.fastq \
+	-S PDNC4_CA-HJ-LAP_cC4_Y.sam
 
 ### For the E.coli alignments, I've used my E.coli genome that I downlaoded and indexed
 ## Before running, download the E.coli genome and make an index with bowtie2
 ## I used https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_001308125.1/
 ## Look at the previous training module for information on how to do that
 
-#bowtie2 \
-#	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
-#	-x /bgfs/yarbely/mam835/CUT.RUN/Ecoli \
-#	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R1.fastq \
-#	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R2.fastq \
-#	-S E2_12m_sc_D4_ecoli.sam
+bowtie2 \
+	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
+	-x /bgfs/yarbely/mam835/CUT.RUN/Ecoli \
+	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R1.fastq \
+	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool5/C2_12m_sc_D4/C2_12m_sc_D4.trimmed.R2.fastq \
+	-S E2_12m_sc_D4_ecoli.sam
 
-#bowtie2 \
-#	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
-#	-x /bgfs/yarbely/mam835/CUT.RUN/Ecoli \
-#	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R2.fastq \
-#	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R1.fastq \
-#	-S PDNC4_CA-HJ-LAP_cC4_Y_ecoli.sam
+bowtie2 \
+	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
+	-x /bgfs/yarbely/mam835/CUT.RUN/Ecoli \
+	-1 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R2.fastq \
+	-2 /bgfs/yarbely/mam835/CUT.RUN/Pool2/PDNC4_CA-HJ-LAP_cC4_Y/PDNC4_CA-HJ-LAP_cC4_Y.trimmed.R1.fastq \
+	-S PDNC4_CA-HJ-LAP_cC4_Y_ecoli.sam
 
-#bowtie2 \
-#	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
-#	-x /bgfs/yarbely/mam835/CUT.RUN/Ecoli \
-#	-1 PDNC4_1.trimmed.fq \
-#	-2 PDNC4_2.trimmed.fq \
-#	-S PDNC4_test_ecoli.sam
+bowtie2 \
+	--end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 --dovetail -p 8 \
+	-x /bgfs/yarbely/mam835/CUT.RUN/Ecoli \
+	-1 PDNC4_1.trimmed.fq \
+	-2 PDNC4_2.trimmed.fq \
+	-S PDNC4_test_ecoli.sam
 
 samtools stats PDNC4_test.sam > PDNC4_test_stats.txt
 samtools stats PDNC4_CA-HJ-LAP_cC4_Y.sam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
