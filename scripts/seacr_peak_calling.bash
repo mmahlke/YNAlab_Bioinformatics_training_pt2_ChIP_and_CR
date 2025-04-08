@@ -8,9 +8,6 @@
 #SBATCH --error=/ix1/yarbely/<your_user>/training/CR_PDNC4/job.%J.err
 #SBATCH --output=/ix1/yarbely/<your_user>/training/CR_PDNC4/job.%J.out
 
-module load gcc/8.2.0
-module load bedtools/2.29.0
-
 cd /ix1/yarbely/<your_user>/training/PD-NC4
 
 mkdir ./seacr_peaks
@@ -18,6 +15,8 @@ mkdir ./seacr_peaks
 #Now call peaks with seacr
 ## Note about seacr--it requires bedtools module to be loaded
 ## So if you run peak calling with seacr separately, make sure to load gcc and bedtools as well
+module load gcc/8.2.0
+module load bedtools/2.29.0
 module load seacr/1.3
 
 ##PDNC4_test
