@@ -7,7 +7,7 @@
 
 ChIP-seq             |  CUT&RUN
 :-------------------------:|:-------------------------:
-![ChIP-seq basic steps](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/ChIP-blog-figure-1.jpg)  |  ![CUT&RUN basic steps](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/cut-run-blog-figure-1.png)
+![ChIP-seq basic steps](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/ChIP-blog-figure-1.jpg)  |  ![CUT&RUN basic steps](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/cut-run-blog-figure-1.png)
 
 *Images from epicypher* 
 
@@ -139,7 +139,7 @@ samtools stats E2_12m_sc_D4_ecoli.sam > E2_12m_sc_D4_ecoli_stats.txt
 
 Now we can view the stats reports and create a table for our samples coverage. The stats report will look like this:
 
-![Samtools stats example output](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Stats_example.png)
+![Samtools stats example output](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Stats_example.png)
 
 Let's extract the data we need and place that in a table. For you own analysis, you should prepare separate normalization tables for any groups of samples you want to compare. 
 
@@ -182,7 +182,7 @@ First, let's view the $$\textnormal{\color{gold}bigWigs}$$ with IGV (Integrated 
 IGV web app has support for some genomes like hg38. If you are using a unique genome, you can upload that reference to IGV before viewing your $$\textnormal{\color{gold}bigWig}$$ files. 
 
 Let's load all of our $$\textnormal{\color{gold}bigWig}$$ files onto IGV. You can scroll around and look at the data across the entire genome. These $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ for CENP-A should show enrichment at the centromeres and at NeoCEN4 on Chr4. Here's a snapshot of the data genome-wide:
-![CENP-A genome-wide](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/IGV_snap.png)
+![CENP-A genome-wide](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/IGV_snap.png)
 
 Let's look at Chromosome 4 and let's set the scale of each track to be the same (0-60) so we can get a clearer view of the data. 
 
