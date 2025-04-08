@@ -10,7 +10,6 @@
 
 module load gcc/8.2.0
 module load bedtools/2.29.0
-module load samtools/1.14
 
 cd /ix1/yarbely/<your_user>/training/PD-NC4
 
