@@ -54,7 +54,7 @@ In our last training session, our final task was to submit a $$\textnormal{\colo
 + two additional PD-NC4 CUT&RUN files
   + each file has been converted to bam format, sorted, and indexed
   + each bam file comes with it's own index (.bai)   
-+ a CUT&RUN -control file (created for this analysis)
++ a CUT&RUN - control file (created for this analysis)
 + Each file has also been aligned to the E. coli genome assembly (more on that below)
 
  
@@ -79,7 +79,6 @@ for FILE in $(cat ./list_of_files.txt)
 do
     cp ${FILE} .
 done
-
 ```
 And now we have them in our own working directory. 
 
@@ -108,7 +107,7 @@ For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
   + again, controlling for background levels
   + without a - control, you can use thresholding to set a background level
 
-What is a spike-in control? It's a small ammount of DNA from another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ samples. These sample files have all been aligned to the human genome assembly (hg38p.14) and the E.coli genome assembly. 
+What is a spike-in control? It's a small ammount of DNA from another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ samples. 
 
 **In general, the steps for normalizing are:**
 1) Align your sequencing reads to the target genome
@@ -187,7 +186,7 @@ Let's load all of our $$\textnormal{\color{gold}bigWig}$$ files onto IGV. You ca
 
 Let's look at Chromosome 4 and let's set the scale of each track to be the same (0-60) so we can get a clearer view of the data. 
 
-If you recall, we anticipated CA/HJ_LAP_C4Y to have more CENP-A than PDNC4_test. At CEN4, the position and abundance of CENP-A look similar between these two samples. E2_12m_scD4 actually looks to have more CENP-A reads piled up at CEN4, but remember that we scaled the other two samples down to match with scD4. Normalizing is not perfect.
+If you recall, we anticipated CA/HJ_LAP_C4Y to have more CENP-A than PDNC4_test. At CEN4, the position and abundance of CENP-A look similar between these two samples. E2_12m_scD4 actually looks to have more CENP-A reads piled up at CEN4, but remember that we scaled the other two samples down to match with scD4. Normalizing is not perfect and there are otehr considerations--E2_12m_scD4 is 12 months old and likely has some level of aneuploidy that can affect reads at CEN4; we know there is selective pressure to gain multiple copies of Chr4. 
 
 If we look at NeoCEN4, we see that PDNC4_test has a strong 3 peaks CENP-A signal, with CENP-A/HJURP overexpression in CA/HJ_LAP_C4Y having a destabilizing effect on NeoCEN4. Interestingly, E2_12m_scD4 also has low CENP-A that is spreading from the 3 peaks position. 
 
@@ -241,7 +240,7 @@ The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value
 
 We have also turned off ```MACS2``` local dynamic lambda, which samples the background at each candidate peak. CUT&RUN can have a lot of background noise which can reduce peak calling with active dynamic lambda. See [here](https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html) for more information about MACS2 lambda and sliding window peak calling algorithm.
 
-To illustrate how peak calling parameters affect the output of called peaks, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call peaks ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold (
+To illustrate how peak calling parameters affect the output of called peaks, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call peaks ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold ( 0.1% of called peaks are expected to be false positives). 
 
 MACS2 will give three output files all named with the prefix you specified in the ```callpeak``` command:
 + _peaks.narrowPeak: BED6+4 format file which contains the peak locations together with peak summit, pvalue and qvalue
@@ -298,7 +297,7 @@ Next, upload the **updated** file to your folder at ```/ix1/yarbely/<your_user>/
 
 Then submit the script with the command 
 ```
-sbatch seacr_peaks.bash
+sbatch seacr_peaks_prep.bash
 ```
 
 Ok, let's examine what's included in the script.
@@ -354,6 +353,14 @@ bedtools genomecov -bg -i Neg_control.clean.bed -g GCF_000001405.40_GRCh38.p14_g
 
 ```
 Now we are ready to call peaks with ```SEACR```. 
+Let's again downlaod a script, update it and upload it to your current working directory.
+
+Then submit the script with the command 
+```
+sbatch seacr_peak_calling.bash
+```
+
+Let's look inside the script to see what parameters we are calling peaks with:
 
 ```
 module load seacr/1.3
@@ -368,7 +375,7 @@ SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.00001 non relaxed PDNC4_test_0.00001
 SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non stringent PDNC4_test_0.01
 SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non relaxed PDNC4_test_0.01
 
-
+##Repeat for other samples
 ```
  ```SEACR``` peaks are named either <output prefix>.stringent.bed OR <output prefix>.relaxed.bed depending on the parameters in the original command. ```SEACR``` peaks also have a simple format:
 1) Chromosome
@@ -397,11 +404,11 @@ You might be wondering at some point, Why the heck do I need to use this more co
 + create publicly available hubs when publishing so others can interactively look through your data
 
 
-With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload bigWig files. Instead, you need to find a remote host to store your bigWig files and then direct UCSC genome browser to access your files at the remote server. 
+With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload $$\textnormal{\color{gold}bigWig}$$ files. Instead, you need to find a remote host to store your $$\textnormal{\color{gold}bigWig}$$ files and then direct UCSC genome browser to access your files at the remote server. 
 
-I use [Cyverse](https://cyverse.org/) to host my bigWig tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
+I use [Cyverse](https://cyverse.org/) to host my $$\textnormal{\color{gold}bigWig}$$ tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
 
-First, let's upload our bigWigs to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three bigWigs there. 
+First, let's upload our $$\textnormal{\color{gold}bigWigs}$$ to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three $$\textnormal{\color{gold}bigWig}$$ there. 
 
 Now let's go totgether to the [UCSC Genome Browser](https://genome.ucsc.edu/). We will each build our own track session and save it. Let's first select an empty browser for our reference genome.  
 
@@ -432,10 +439,10 @@ We want to add our tracks to this assembly. To do that, we select **My Data** an
 ![Add tracks](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Add_browser_lines.png)
 
 On the **Add Custom Tracks** page, we will enter a browser line that either:
-+ specifies the information about and location of our bigWig track
++ specifies the information about and location of our $$\textnormal{\color{gold}bigWig}$$ track
 + or specifies the information about and is followed by the data included in our .bed file
 
-To add a bigWig track, type a browser line like this into the 'Paste URLs or Data' box:
+To add a $$\textnormal{\color{gold}bigWig}$$ track, type a browser line like this into the 'Paste URLs or Data' box:
 ```
 track type=bigWig name="PDNC4_test_CENP-A" bigDataUrl=<insert here a public link to your .bw file>
 ```
@@ -443,7 +450,7 @@ There are many options you can add to this browser line to control the way your 
 
 Please look at the [Sessions User Guide](https://genome.ucsc.edu/goldenPath/help/hgSessionHelp.html) and the [Custom Tracks Guide](https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#CustomTracks) for more information on the available options. 
 
-Let's use the example above to add our three bigWig tracks. In the space for **bigDataUrl**, we need to add the location of the file from Cyverse. We can get that link from Cyverse. 
+Let's use the example above to add our three $$\textnormal{\color{gold}bigWig}$$ tracks. In the space for **bigDataUrl**, we need to add the location of the file from Cyverse. We can get that link from Cyverse. 
 
 ![Getting public links](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Cyverse_public_links.png)
 
