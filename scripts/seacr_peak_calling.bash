@@ -56,5 +56,5 @@ SEACR_1.3.sh E2_12m_sc_D4_seacr.bedgraph 0.01 non relaxed E2_12m_sc_D4_0.01
 
 
 #Move these new peak files to ./seacr_peaks
-mv *stringent.bed > ./seacr_peaks/
-mv *relaxed.bed > ./seacr_peaks/
+mv *stringent.bed ./seacr_peaks/
+mv *relaxed.bed ./seacr_peaks/
