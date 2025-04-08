@@ -473,8 +473,12 @@ You should now be able to see your tracks and this set of $$\textnormal{\color{v
 **Tip:** NarrowPeak files contain the same but more data then a typical .bed file. If you want to see peaks with less information, you can convert your .narrowPeak or peaks.xls files to a simple .bed format and upload that.
 
 Lastly, let's save this session so we can revisit it and edit it later. To save, select **My Data** then **My Sessions**. You will be prompted to log in at this point. We can log in to the YNA lab sessions management area. 
-User: Arbelylab
+<br/>
+<br/>
+User: Arbelylab <br/>
 Pass: arbelylab
+<br/>
+<br/>
 ![Session management](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/My_sessions.png)
 
 Feel free to set up your own **Session Management** area if you'd like! 
