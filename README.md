@@ -3,7 +3,7 @@
 
 
 
-## What are ChIP-seq and CUT&RUN? 
+## What are $$\textnormal{\color{aqua}ChIP-seq}$$ and $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$? 
 
 ChIP-seq             |  CUT&RUN
 :-------------------------:|:-------------------------:
@@ -405,12 +405,33 @@ First, let's upload our bigWigs to our Cyverse space. Navigate to the Discovery 
 
 Now let's go totgether to the [UCSC Genome Browser](https://genome.ucsc.edu/). We will each build our own track session and save it. Let's first select an empty browser for our reference genome.  
 
+**Select Genome browser**
+
+![Go to UCSC and select Genome Browser](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/genome_browser.png) 
+
+**Select the Genome Assembly you want to view from the Drop-down menu**
+<br/>
+We will select the genome we aligned to (hg38). You can see the initial release date and when they updated with the T2T patch (p14) highlighted in green.
+
+![Select your assembly](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/GA_assembly_selection.png) 
+
+**Now you should see the Genome Browser and annotation tracks**
+<br/>
+We can explore the browser a bit--take a look at the annotation tracks available below the browser.
+
+![View the genome browser](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/GA_browser_view.png)
 
 
 
-Navigate to Genome Browser, then select the genome we want (hg38). You can see the initial release date and when they updated with the T2T patch (p14) highlighted in green. We can explore the browser a bit--take a look at the annotation tracks available below the browser.
+We want to add our tracks to this assembly. To do that, we select **My Data** and **Custom Tracks** to get to the **Manage Custom Tracks** page, then click on **Add Custom Tracks**.
 
-We want to add our track to this assembly. To do that, we select My Data and Custom Tracks. On the Add Custom Tracks page, we will enter a browser line that either:
+![Navigate to Manage Custom tracks](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/GA_my_data.png)
+
+![Add tracks](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/GA_custom_tracks.png)
+
+
+
+On the Add Custom Tracks page, we will enter a browser line that either:
 + specifies the information about and location of our bigWig track
 + or specifies the information about and is followed by the data included in our .bed file
 
@@ -424,7 +445,7 @@ Please look at the [Sessions User Guide](https://genome.ucsc.edu/goldenPath/help
 
 Let's use the example above to add our three bigWig tracks. In the space for bigDataUrl, we need to add the location of the file from Cyverse. We can get that link from Cyverse. Then click submit. 
 
-Repeat those steps using the links for the other two files, then navigate back to the active browser to see the loaded bigWig tracks and to move around in the browser. 
+Repeat those steps using the links for the other two files, then navigate back to the active browser by selecting **Return to current position** to see the loaded bigWig tracks and to move around in the browser. 
 
 Next, let's add peak data from a bed file. Navigate back to the Add Custom Tracks page and enter a browser line like:
 ```
