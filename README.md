@@ -190,6 +190,9 @@ If we look at NeoCEN4, we see that PDNC4_test has a strong 3 peaks CENP-A signal
 
 We can compare CENP-A position/abundance and see how it changes, but how can we tell if the changes are significant? We do that by calling $$\textnormal{\color{violet}peaks}$$. 
 
+
+## Peak calling
+
 There are two different modules we will use to call $$\textnormal{\color{violet}peaks}$$. One is ```MACS2``` and the other is ```SEACR```. ```MACS2``` is a $$\textnormal{\color{violet}peak}$$ caller suitable for $$\textnormal{\color{aqua}ChIP-seq}$$ but ```SEACR``` is designed for calling $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ $$\textnormal{\color{violet}peaks}$$.
 
 When we call peaks with either ```MACS2``` or ```SEACR```, we can use a - control or set a user-defined threshold. For this analysis, we have a - control. 
@@ -284,11 +287,27 @@ You can also see that peak calling can perform differently based on the context.
 
 Now let's see how ```SEACR``` performs when calling peaks on these same samples. See the documentation for ```SEACR``` [here](https://github.com/FredHutch/SEACR).
 
-First, we need to prepare our files for peak calling with ```SEACR```.
+First, we need to prepare our files for peak calling with ```SEACR```. Let's save some time by submitting the script found [here]() and then go over the steps in the script outlined below. 
+
+To submit the script, download the file and open it. You'll need to update the Bash instructions to include the path to your user name. In the beginning of the script, we also specify our working directory. Check and make sure you have updated that to show your path to your working directory. 
+
+Next, upload the **updated** file to your folder at ```/ix1/yarbely/<your_user>/CR_PDNC4```. 
+
+Then submit the script with the command 
+```
+sbatch seacr_peaks.bash
+```
+
+Ok, let's examine what's included in the script.
 
 ```
+module load gcc/8.2.0
 module load bedtools/2.29.0
+module load samtools/1.14
 
+cd /ix1/yarbely/<your_user>/CR_PDNC4
+
+#Make a new directory called seacr_peaks in our current working directory
 mkdir ./seacr_peaks
 
 #First, we convert the bam file to a bed file
@@ -301,8 +320,16 @@ cut -f 1,2,3,5 PDNC4_test_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_test_seac
 
 #Next we are scaling the clean bed file using our calculated scaling factor and the size of the genome we aligned to, then sending the output to a bedgraph format
 ## Bedgraph format is the required file format for peak calling with SEACR 
+## We need to prepare an index for our alignment file to use in the genomecov command
+## We need to unzip the file to build the index
 
-bedtools genomecov -bg -scale 0.458 -i PDNC4_test_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > PDNC4_test_seacr.bedgraph
+gunzip GCF_000001405.40_GRCh38.p14_genomic.fna.gz
+
+samtools faidx GCF_000001405.40_GRCh38.p14_genomic.fna.gz
+
+#Now we can use that index to prepare the bedgraph with bedtools command genomecov
+
+bedtools genomecov -bg -scale 0.458 -i PDNC4_test_seacr.clean.bed -g GCF_000001405.40_GRCh38.p14_genomic.fna.fai > PDNC4_test_seacr.bedgraph
 
 #Now, repeat for the other two files
 ### Remember that the last file will not be scaled, so remove the -scale option
@@ -310,12 +337,17 @@ bedtools genomecov -bg -scale 0.458 -i PDNC4_test_seacr.clean.bed -g ./GCF_00000
 #CA-HJ-LAP_cC4
 bedtools bamtobed -i PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_seacr.bed
 cut -f 1,2,3,5 CA-HJ-LAP_cC4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > CA-HJ-LAP_cC4_seacr.clean.bed
-bedtools genomecov -bg -scale 0.399 -i CA-HJ-LAP_cC4_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > CA-HJ-LAP_cC4_seacr.bedgraph
+bedtools genomecov -bg -scale 0.399 -i CA-HJ-LAP_cC4_seacr.clean.bed -g GCF_000001405.40_GRCh38.p14_genomic.fna.fai > CA-HJ-LAP_cC4_seacr.bedgraph
 
 #E2_12m_scD4
 bedtools bamtobed -i E2_12m_sc_D4_sorted.bam > E2_12m_sc_D4_seacr.bed
 cut -f 1,2,3,5 E2_12m_sc_D4_seacr.bed | sort -k1,1 -k2,2n -k3,3n > E2_12m_sc_D4_seacr.clean.bed
-bedtools genomecov -bg -i E2_12m_sc_D4_seacr.clean.bed -g ./GCF_000001405.40_GRCh38.p14_genomic.fna.gz > E2_12m_sc_D4_seacr.bedgraph
+bedtools genomecov -bg -i E2_12m_sc_D4_seacr.clean.bed -g GCF_000001405.40_GRCh38.p14_genomic.fna.fai > E2_12m_sc_D4_seacr.bedgraph
+
+#We also need to prepare our - control 
+bedtools bamtobed -i Neg_control.bam > Neg_control_seacr.bed
+cut -f 1,2,3,5 Neg_control_seacr.bed | sort -k1,1 -k2,2n -k3,3n > Neg_control_seacr.clean.bed
+bedtools genomecov -bg -i Neg_control.clean.bed -g GCF_000001405.40_GRCh38.p14_genomic.fna.fai > Neg_control_seacr.bedgraph
 
 ```
 Now we are ready to call peaks with ```SEACR```. 
@@ -323,10 +355,15 @@ Now we are ready to call peaks with ```SEACR```.
 ```
 module load seacr/1.3
 
-#With a -control
-SEACR_1.3.sh PDNC4_test_seacr.bedgraph Neg_control norm stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
-#Without a -control
-SEACR_1.3.sh PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph 0.00001 non stringent PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_sc_str_0.00001
+#With a - control
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph Neg_control_seacr.bedgraph norm stringent PDNC4_test_ctrl
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph Neg_control_seacr.bedgraph norm relaxed PDNC4_test_ctrl
+
+#Without a - control
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.00001 non stringent PDNC4_test_0.00001
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.00001 non relaxed PDNC4_test_0.00001
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non stringent PDNC4_test_0.01
+SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non relaxed PDNC4_test_0.01
 
 
 ```
@@ -338,27 +375,30 @@ SEACR_1.3.sh PDNC4_CA-HJ-LAP_cG1_Y_pdnc4_seacr_sc.bedgraph 0.00001 non stringent
 5) Maximum bedgraph signal attained at any base pair within denoted coordinates
 6) Region representing the farthest upstream and farthest downstream bases within the denoted coordinates that are represented by the maximum bedgraph signal
 
-Now let's download our ```SEACR``` peaks and upload them to IGV. We can see that the peaks are quite different between these two methods. 
+Now let's download our ```SEACR``` peaks and upload them to IGV. We can see that the peaks are quite different between ```SEACR``` and ```MACS2```. 
 
 **Takehome:** peak calling is an art. You need to select the right peak calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy.
 
 Ok, so we did it!! 
 
-We made tracks and we called peaks with ```MACS2``` and with ```SEACR```. The last thing we need to know how to do is to share this data interactively with others in a *pleasant* way. We can do that by setting up a track session on UCSC genome browser. 
+We made tracks and we called peaks with ```MACS2``` and with ```SEACR```. 
 
-IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a hub for viewing tracks indefinitely that you can share to others with UCSC genome browser. We will try it out next. 
+The last thing we need to know how to do is to share this data interactively with others in a *pleasant* way. We can do that by setting up a track session on UCSC genome browser. 
 
-You might be wondering at some point, Why the heck do I need to use this ridiculous browser? I'll just use IGV of course, it's simple! 
+IGV is like UCSC Genome Browser lite. It serves the same general function but doesn't offer all the same features. Most importantly, you can set up a session on UCSC genome browser for viewing tracks indefinitely that you can share to others. We will try it out next. 
+
+You might be wondering at some point, Why the heck do I need to use this more complicated UCSC browser? I'll just use IGV, it's simple! 
 
 **Here are some scenarios where you will need to use UCSC browser:**
 + share tracks to others without requiring others to manually load all your bigWigs and bed files and put them in an order that makes sense
 + share tracks to others while preserving colors, scaling, and other options you like for your data
  + Or for yourself! It's a lot of work to get all the settings right and then lose it when you close IGV 
--create publicly available hubs when publishing so others can interactively look through your data
++ create publicly available hubs when publishing so others can interactively look through your data
+
 
 With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload bigWig files. Instead, you need to find a remote host to store your bigWig files and then direct UCSC genome browser to access your files at the remote server. 
 
-I use Cyverse to host my bigWig tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many hubs, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. 
+I use Cyverse to host my bigWig tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
 
 First, let's upload our bigWigs to our Cyverse space. 
 
