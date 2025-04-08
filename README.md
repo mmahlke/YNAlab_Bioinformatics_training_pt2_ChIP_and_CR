@@ -412,6 +412,8 @@ I use [Cyverse](https://cyverse.org/) to host my $$\textnormal{\color{gold}bigWi
 
 First, let's upload our $$\textnormal{\color{gold}bigWigs}$$ to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three $$\textnormal{\color{gold}bigWigs}$$ there. 
 
+![Getting_Started_cyverse](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Cyverse_upload.png)
+
 Now let's go to the [UCSC Genome Browser](https://genome.ucsc.edu/). We will each build our own track session and save it. Let's first select an empty browser for our reference genome.  
 
 **Select Genome browser**
