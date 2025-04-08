@@ -61,7 +61,7 @@ In our last training session, our final task was to submit a $$\textnormal{\colo
 To view all of the steps taken for creating/processing these files, check [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/scripts/CUT.RUN_training_alignments.bash).
 
 Let's request a session on the cluster and grab the files with these commands:
-```
+```ruby
 srun -t 2:00:00 --cluster htc --partition htc --spus-per-task 16 --pty bash
 
 #Set the path to the directory you want to work in, use the actual path to your directory
@@ -118,7 +118,7 @@ What is a spike-in control? It's a small ammount of DNA from another species tha
 
 
 Let's assess our samples and calculate scaling factors. First, check where we are and load our modules. 
-```
+```bash
 pwd
 
 module load gcc/8.2.0
@@ -127,7 +127,7 @@ module load samtools/1.14
 
 We can use ```samtools stats``` command to return statistics about our sam/bam files, including the number of mapped reads. We will perform this for our hg38p.14 alignments and our E.coli alignments.
 
-```
+```bash
 samtools stats PDNC4_test.sam > PDNC4_test_stats.txt
 samtools stats PDNC4_CA-HJ-LAP_cC4_Y.sam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
 samtools stats E2_12m_sc_D4.sam > E2_12m_sc_D4_stats.txt
@@ -167,7 +167,7 @@ When we look at the ratios and scaling factors here, what do we interpret? We ca
 Now we have the scaling factors and we can use them to create normalized $$\textnormal{\color{gold}bigWig}$$ tracks with ```deeptools```. Excellent documentation for this package can be found [here](https://deeptools.readthedocs.io/en/latest/content/list_of_tools.html).
 
 Let's load our modules and run the command to make a $$\textnormal{\color{gold}bigWig}$$ track for each of our samples.
-```
+```bash
 module purge
 module load deeptools/3.3.0
 
@@ -201,7 +201,7 @@ When we call peaks with either ```MACS2``` or ```SEACR```, we can use a - contro
 
 Let's first call some peacks with ```MACS2```. Please see the documentation for MACS2 [here](https://pypi.org/project/MACS2/).
 To call peaks, we need to prepare **normalized** bam files with the same scale factors we calculated above.
-```
+```bash
 module purge
 module load gcc/8.2.0
 module load samtools/1.14
@@ -212,7 +212,7 @@ samtools view -h -b -s 0.399 PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_Y_
 ## For E2_12m_scD4, we set the scale factor to 1, so we do not need to downsample and prepare a new .bam file
 ```
 Now we call $$\textnormal{\color{violet}peaks}$$ on the normalized bam files with ```MACS2```.
-```
+```bash
 module load macs/2.2.7.1
 
 mkdir ./macs2_peaks
@@ -304,7 +304,7 @@ sbatch seacr_peaks_prep.bash
 
 Ok, let's examine what's included in the script.
 
-```
+```ruby
 module load gcc/8.2.0
 module load bedtools/2.29.0
 module load samtools/1.14
@@ -364,7 +364,7 @@ sbatch seacr_peak_calling.bash
 
 Let's look inside the script to see what parameters we are calling peaks with:
 
-```
+```bash
 module load seacr/1.3
 
 #With a - control
