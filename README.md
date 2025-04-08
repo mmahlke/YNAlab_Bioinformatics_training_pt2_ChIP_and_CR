@@ -58,7 +58,7 @@ In our last training session, our final task was to submit a $$\textnormal{\colo
 + Each file has also been aligned to the E. coli genome assembly (more on that below)
 
  
-To view all of the steps taken for creating/processing these files, check [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/CUT.RUN_training_alignments.bash).
+To view all of the steps taken for creating/processing these files, check [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/scripts/CUT.RUN_training_alignments.bash).
 
 Let's request a session on the cluster and grab the files with these commands:
 ```
@@ -186,7 +186,7 @@ Let's load all of our $$\textnormal{\color{gold}bigWig}$$ files onto IGV. You ca
 
 Let's look at Chromosome 4 and let's set the scale of each track to be the same (0-60) so we can get a clearer view of the data. 
 
-If you recall, we anticipated CA/HJ_LAP_C4Y to have more CENP-A than PDNC4_test. At CEN4, the position and abundance of CENP-A look similar between these two samples. E2_12m_scD4 actually looks to have more CENP-A reads piled up at CEN4, but remember that we scaled the other two samples down to match with scD4. Normalizing is not perfect and there are otehr considerations--E2_12m_scD4 is 12 months old and likely has some level of aneuploidy that can affect reads at CEN4; we know there is selective pressure to gain multiple copies of Chr4. 
+If you recall, we anticipated CA/HJ_LAP_C4Y to have more CENP-A than PDNC4_test. At CEN4, the position and abundance of CENP-A look similar between these two samples. E2_12m_scD4 actually looks to have more CENP-A reads piled up at CEN4, but remember that we scaled the other two samples down to match with scD4. Normalizing is not perfect and there are other considerations--E2_12m_scD4 is 12 months old and likely has some level of aneuploidy that can affect reads at CEN4; we know there is selective pressure to gain multiple copies of Chr4. 
 
 If we look at NeoCEN4, we see that PDNC4_test has a strong 3 peaks CENP-A signal, with CENP-A/HJURP overexpression in CA/HJ_LAP_C4Y having a destabilizing effect on NeoCEN4. Interestingly, E2_12m_scD4 also has low CENP-A that is spreading from the 3 peaks position. 
 
@@ -211,7 +211,7 @@ samtools view -h -b -s 0.399 PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam > CA-HJ-LAP_cC4_Y_
 
 ## For E2_12m_scD4, we set the scale factor to 1, so we do not need to downsample and prepare a new .bam file
 ```
-Now we call peaks on the normalized bam files with ```MACS2```.
+Now we call $$\textnormal{\color{violet}peaks}$$ on the normalized bam files with ```MACS2```.
 ```
 module load macs/2.2.7.1
 
@@ -236,11 +236,11 @@ Here:
 + -g is the genome size
 + -q is the q-value
 
-The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value, with a lower q-value indicating a more significant peak. A q-value of 0.05, for example, means that 5% of the called peaks are expected to be false positive. 
+The q-value represents the False Discovery Rate (FDR) and is an adjusted p-value, with a lower q-value indicating a more significant $$\textnormal{\color{violet}peak}$$. A q-value of 0.05, for example, means that 5% of the called $$\textnormal{\color{violet}peaks}$$ are expected to be false positive. 
 
-We have also turned off ```MACS2``` local dynamic lambda, which samples the background at each candidate peak. CUT&RUN can have a lot of background noise which can reduce peak calling with active dynamic lambda. See [here](https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html) for more information about MACS2 lambda and sliding window peak calling algorithm.
+We have also turned off ```MACS2``` local dynamic lambda, which samples the background at each candidate $$\textnormal{\color{violet}peak}$$. CUT&RUN can have a lot of background noise which can reduce $$\textnormal{\color{violet}peak}$$ calling with active dynamic lambda. See [here](https://hbctraining.github.io/Intro-to-ChIPseq/lessons/05_peak_calling_macs.html) for more information about MACS2 lambda and sliding window peak calling algorithm.
 
-To illustrate how peak calling parameters affect the output of called peaks, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call peaks ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold ( 0.1% of called peaks are expected to be false positives). 
+To illustrate how $$\textnormal{\color{violet}peak}$$ calling parameters affect the output of called $$\textnormal{\color{violet}peaks}$$, we are taking two approaches. Without a control, we are using a very stringent q-value threshold to call $$\textnormal{\color{violet}peaks}$$ ( 0.001% of called peaks are expected to be false positives). With a control, we are using a more permissive q-value threshold ( 0.1% of called peaks are expected to be false positives). 
 
 MACS2 will give three output files all named with the prefix you specified in the ```callpeak``` command:
 + _peaks.narrowPeak: BED6+4 format file which contains the peak locations together with peak summit, pvalue and qvalue
@@ -252,8 +252,10 @@ MACS2 will give three output files all named with the prefix you specified in th
 
 I highly recommend taking some time to familiarize yourself with different data format structures [here](https://genome.ucsc.edu/FAQ/FAQformat.html). 
 
-Let's look at the content of our peak files. <br/>
-PDNC4_test_10-6_peaks.narrowPeak ([BED6+4 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12)): 
+Let's look at the content of our $$\textnormal{\color{violet}peak}$$ files. 
+<br/>
+
+**PDNC4_test_10-6_peaks.narrowPeak ([BED6+4 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12)):**
 1) chrom - chromosome name
 2) chromStart - starting position in the chromosome 
 3) chromEnd - ending position in the chromosome 
@@ -265,7 +267,7 @@ PDNC4_test_10-6_peaks.narrowPeak ([BED6+4 format](https://genome.ucsc.edu/FAQ/FA
 3) qValue - Measurement of statistical significance using false discovery rate (-log10). Use -1 if no qValue is assigned.
 4) peak - Peak summit; part of peak with highest count
 
-PDNC4_test_10-6_peaks.xls: 
+**PDNC4_test_10-6_peaks.xls:**
 1) chromosome name
 2) start position of peak
 3) end position of peak
@@ -276,20 +278,20 @@ PDNC4_test_10-6_peaks.xls:
 8) fold enrichment for this peak summit against random Poisson distribution with **local lambda**
 9) -log10(qvalue) at peak summit
 
-PDNC4_test_10-6_summits.bed: 
+**PDNC4_test_10-6_summits.bed:**
 1) chromosome name
 2) start position of summit
 3) end position of summit
 4) length of summit region
 5) score - same as the narrowpeak value 5
 
-Let's download our .narrowPeak files and upload them to IGV to look at the distribution of peaks. You should see that calling without a - control using MACS2 allows for very generous peak calling even with a stringent q-value. Calling with a - control provides more control on peak calling. 
+Let's download our .narrowPeak files and upload them to IGV to look at the distribution of $$\textnormal{\color{violet}peaks}$$. You should see that calling without a - control using MACS2 allows for very generous $$\textnormal{\color{violet}peak}$$ calling even with a stringent q-value. Calling with a - control provides more control on $$\textnormal{\color{violet}peak}$$ calling. 
 
-You can also see that peak calling can perform differently based on the context. It behaves one way at CEN4 and another way at NeoCEN4. Keep that in mind. 
+You can also see that $$\textnormal{\color{violet}peak}$$ calling can perform differently based on the context. It behaves one way at CEN4 and another way at NeoCEN4. Keep that in mind. 
 
-Now let's see how ```SEACR``` performs when calling peaks on these same samples. See the documentation for ```SEACR``` [here](https://github.com/FredHutch/SEACR).
+Now let's see how ```SEACR``` performs when calling $$\textnormal{\color{violet}peaks}$$ on these same samples. See the documentation for ```SEACR``` [here](https://github.com/FredHutch/SEACR).
 
-First, we need to prepare our files for peak calling with ```SEACR```. Let's save some time by submitting the script found [here]() and then go over the steps in the script outlined below. 
+First, we need to prepare our files for $$\textnormal{\color{violet}peak}$$ calling with ```SEACR```. Let's save some time by submitting the script found [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/scripts/seacr_peaks_prep.bash) and then go over the steps in the script outlined below. 
 
 To submit the script, download the file and open it. You'll need to update the Bash instructions to include the path to your user name. In the beginning of the script, we also specify our working directory. Check and make sure you have updated that to show your path to your working directory. 
 
@@ -352,8 +354,8 @@ cut -f 1,2,3,5 Neg_control_seacr.bed | sort -k1,1 -k2,2n -k3,3n > Neg_control_se
 bedtools genomecov -bg -i Neg_control.clean.bed -g GCF_000001405.40_GRCh38.p14_genomic.fna.fai > Neg_control_seacr.bedgraph
 
 ```
-Now we are ready to call peaks with ```SEACR```. 
-Let's again downlaod a script, update it and upload it to your current working directory.
+Now we are ready to call $$\textnormal{\color{violet}peaks}$$ with ```SEACR```. 
+Let's again download a script [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/scripts/seacr_peak_calling.bash), update it and upload it to your current working directory.
 
 Then submit the script with the command 
 ```
@@ -377,7 +379,7 @@ SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non relaxed PDNC4_test_0.01
 
 ##Repeat for other samples
 ```
- ```SEACR``` peaks are named either <output prefix>.stringent.bed OR <output prefix>.relaxed.bed depending on the parameters in the original command. ```SEACR``` peaks also have a simple format:
+ ```SEACR``` $$\textnormal{\color{violet}peaks}$$ are named either <output prefix>.stringent.bed OR <output prefix>.relaxed.bed depending on the parameters in the original command. ```SEACR``` $$\textnormal{\color{violet}peaks}$$ also have a simple .bed format:
 1) Chromosome
 2) Start coordinate
 3) End coordinate
@@ -385,9 +387,9 @@ SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non relaxed PDNC4_test_0.01
 5) Maximum bedgraph signal attained at any base pair within denoted coordinates
 6) Region representing the farthest upstream and farthest downstream bases within the denoted coordinates that are represented by the maximum bedgraph signal
 
-Now let's download our ```SEACR``` peaks and upload them to IGV. We can see that the peaks are quite different between ```SEACR``` and ```MACS2```. 
+Now let's download our ```SEACR``` $$\textnormal{\color{violet}peaks}$$ and upload them to IGV. We can see that the $$\textnormal{\color{violet}peaks}$$ are quite different between ```SEACR``` and ```MACS2```. 
 
-**Takehome:** peak calling is an art. You need to select the right peak calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy.
+**Takehome:** $$\textnormal{\color{violet}peak}$$ calling is an art. You need to select the right $$\textnormal{\color{violet}peak}$$ calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy.
 
 ## Creating track sessions with UCSC Genome Browser
 
@@ -400,17 +402,17 @@ You might be wondering at some point, Why the heck do I need to use this more co
 **Here are some scenarios where you will need to use UCSC browser:**
 + share tracks to others without requiring others to manually load all your bigWigs and bed files and put them in an order that makes sense
 + share tracks to others while preserving colors, scaling, and other options you like for your data
- + Or for yourself! It's a lot of work to get all the settings right and then lose it when you close IGV 
+  + Or for yourself! It's a lot of work to get all the settings right and then lose it when you close IGV 
 + create publicly available hubs when publishing so others can interactively look through your data
 
 
-With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload $$\textnormal{\color{gold}bigWig}$$ files. Instead, you need to find a remote host to store your $$\textnormal{\color{gold}bigWig}$$ files and then direct UCSC genome browser to access your files at the remote server. 
+With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like $$\textnormal{\color{violet}peak}$$ files in .bed or .narrowPeak format, but you cannot upload $$\textnormal{\color{gold}bigWig}$$ files. Instead, you need to find a remote host to store your $$\textnormal{\color{gold}bigWig}$$ files and then direct UCSC genome browser to access your files at the remote server. 
 
 I use [Cyverse](https://cyverse.org/) to host my $$\textnormal{\color{gold}bigWig}$$ tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
 
-First, let's upload our $$\textnormal{\color{gold}bigWigs}$$ to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three $$\textnormal{\color{gold}bigWig}$$ there. 
+First, let's upload our $$\textnormal{\color{gold}bigWigs}$$ to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three $$\textnormal{\color{gold}bigWigs}$$ there. 
 
-Now let's go totgether to the [UCSC Genome Browser](https://genome.ucsc.edu/). We will each build our own track session and save it. Let's first select an empty browser for our reference genome.  
+Now let's go to the [UCSC Genome Browser](https://genome.ucsc.edu/). We will each build our own track session and save it. Let's first select an empty browser for our reference genome.  
 
 **Select Genome browser**
 
@@ -440,7 +442,7 @@ We want to add our tracks to this assembly. To do that, we select **My Data** an
 
 On the **Add Custom Tracks** page, we will enter a browser line that either:
 + specifies the information about and location of our $$\textnormal{\color{gold}bigWig}$$ track
-+ or specifies the information about and is followed by the data included in our .bed file
++ or specifies the information about and is followed by the $$\textnormal{\color{violet}peak}$$ data included in our .bed or .narrowPeak file
 
 To add a $$\textnormal{\color{gold}bigWig}$$ track, type a browser line like this into the 'Paste URLs or Data' box:
 ```
@@ -458,13 +460,13 @@ Then click **Submit**.
 
 Repeat those steps using the links for the other two files, then navigate back to the active browser by selecting **Return to current position** to see the loaded bigWig tracks and to move around in the browser. 
 
-Next, let's add peak data from a bed file. Navigate back to the **Add Custom Tracks** page and enter a browser line like:
+Next, let's add $$\textnormal{\color{violet}peak}$$ data from a .narrowPeak file. Navigate back to the **Add Custom Tracks** page and enter a browser line like:
 ```
 track type=narrowPeak name="PDNC4_test_peaks_macs2"
 ```
-Press enter/return and paste the data from your narrowPeak file below the browser line. Simply open the file, copy everything, then return to this page and paste it below the browser line. Then click **Submit**. 
+Press enter/return and paste the data from your .narrowPeak file below the browser line. Simply open the file, copy everything, then return to this page and paste it below the browser line. Then click **Submit**. 
 
-You should now be able to see your tracks and this set of peaks in your browser window. 
+You should now be able to see your tracks and this set of $$\textnormal{\color{violet}peaks}$$ in your browser window. 
 
 **Tip:** NarrowPeak files contain the same but more data then a typical .bed file. If you want to see peaks with less information, you can convert your .narrowPeak or peaks.xls files to a simple .bed format and upload that.
 
