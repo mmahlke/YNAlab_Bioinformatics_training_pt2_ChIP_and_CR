@@ -476,7 +476,7 @@ Lastly, let's save this session so we can revisit it and edit it later. To save,
 <br/>
 <br/>
 User: Arbelylab <br/>
-Pass: arbelylab
+Pass: 
 <br/>
 <br/>
 ![Session management](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/My_sessions.png)
