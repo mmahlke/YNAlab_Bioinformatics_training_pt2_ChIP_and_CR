@@ -399,11 +399,52 @@ You might be wondering at some point, Why the heck do I need to use this more co
 
 With the option to indefinitely have track sessions open and accessible comes a caveat--UCSC does not want to host your data. You can directly upload and save smaller data files like bed format files, but you cannot upload bigWig files. Instead, you need to find a remote host to store your bigWig files and then direct UCSC genome browser to access your files at the remote server. 
 
-I use Cyverse to host my bigWig tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
+I use [Cyverse](https://cyverse.org/) to host my bigWig tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
 
-First, let's upload our bigWigs to our Cyverse space. 
+First, let's upload our bigWigs to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three bigWigs there. 
+
+Now let's go totgether to the [UCSC Genome Browser](https://genome.ucsc.edu/). We will each build our own track session and save it. Let's first select an empty browser for our reference genome.  
 
 
+
+
+Navigate to Genome Browser, then select the genome we want (hg38). You can see the initial release date and when they updated with the T2T patch (p14) highlighted in green. We can explore the browser a bit--take a look at the annotation tracks available below the browser.
+
+We want to add our track to this assembly. To do that, we select My Data and Custom Tracks. On the Add Custom Tracks page, we will enter a browser line that either:
++ specifies the information about and location of our bigWig track
++ or specifies the information about and is followed by the data included in our .bed file
+
+To add a bigWig track, type a browser line like this into the 'Paste URLs or Data' box:
+```
+track type=bigWig name="PDNC4_test_CENP-A" bigDataUrl=<insert here a public link to your .bw file>
+```
+There are many options you can add to this browser line to control the way your track will appear in the browser. My most used option is adding ```color=<insert RGB color code>```. RGB color codes can be found using any online RGB color picker. 
+
+Please look at the [Sessions User Guide](https://genome.ucsc.edu/goldenPath/help/hgSessionHelp.html) and the [Custom Tracks Guide](https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#CustomTracks) for more information on the available options. 
+
+Let's use the example above to add our three bigWig tracks. In the space for bigDataUrl, we need to add the location of the file from Cyverse. We can get that link from Cyverse. Then click submit. 
+
+Repeat those steps using the links for the other two files, then navigate back to the active browser to see the loaded bigWig tracks and to move around in the browser. 
+
+Next, let's add peak data from a bed file. Navigate back to the Add Custom Tracks page and enter a browser line like:
+```
+track type=narrowPeak name="PDNC4_test_peaks_macs2"
+```
+Press enter/return and paste the data from your narrowPeak file below the browser line. Simply open the file, copy everything, then return to this page and paste it below the browser line. Then click submit. 
+
+You should now be able to see your tracks and this set of peaks in your browser window. 
+
+Tip: NarrowPeak files contain the same but more data then a typical .bed file. If you want to see peaks with less information, you can convert your .narrowPeak or peaks.xls files to a simple .bed format and upload that.
+
+Lastly, let's save this session so we can revisit it and edit it later. To save, select My Data then My Sessions. You might be prompted to log in at this point. We can log in to the YNA lab sessions management area. 
+User: Arbelylab
+Pass: arbelylab
+
+Feel free to set up your own space if you'd like! You can add any session you want to this space. Always be aware of other user's sessions. Never save over an existing session unless it is your own. 
+
+To save your session, scroll down on the session management page to where you see Save Settings. Type in a name for your active session and click Submit. 
+
+Now you can access your session with your tracks added at any time. Remember that your tracks are linked to their location in Cyverse. If you move them around, you'll need to update your tracks browser line with a new location. 
 
 
 
