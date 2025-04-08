@@ -40,7 +40,7 @@ ChIP-seq             |  CUT&RUN
 :-------------------------:|:-------------------------:
 Read trimming | Read trimming
 Align with BWA | Align with bowtie2
-Normalize to input | Normalize to scaling factor, spike-in control, or - control 
+Normalize to scaling factor | Normalize to scaling factor 
 Create tracks with deeptools | Create tracks with deeptools
 Call peaks with MACS2 | Call peaks with MACS2 and/or SEACR
 Visualize tracks and peaks (IGV, UCSC) | Visualize tracks and peaks (IGV, UCSC)
@@ -65,7 +65,7 @@ Let's request a session on the cluster and grab the files with these commands:
 srun -t 2:00:00 --cluster htc --partition htc --spus-per-task 16 --pty bash
 
 #Set the path to the directory you want to work in, use the actual path to your directory
-cd /path/to/your/working/directory
+cd /ix1/yarbely/<your_user>/training/CR_PDNC4
 
 #Copy a text file with all the file names we want to get to our current directory '.' is shorthand for current directory location
 #The syntax here is 'copy' 'path to the file you want' 'destination to copy it to'
