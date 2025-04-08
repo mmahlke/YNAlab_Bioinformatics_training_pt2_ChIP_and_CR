@@ -429,9 +429,9 @@ We want to add our tracks to this assembly. To do that, we select **My Data** an
 
 ![Add tracks](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/GA_custom_tracks.png)
 
+![Add tracks](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Add_browser_lines.png)
 
-
-On the Add Custom Tracks page, we will enter a browser line that either:
+On the **Add Custom Tracks** page, we will enter a browser line that either:
 + specifies the information about and location of our bigWig track
 + or specifies the information about and is followed by the data included in our .bed file
 
@@ -443,29 +443,38 @@ There are many options you can add to this browser line to control the way your 
 
 Please look at the [Sessions User Guide](https://genome.ucsc.edu/goldenPath/help/hgSessionHelp.html) and the [Custom Tracks Guide](https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#CustomTracks) for more information on the available options. 
 
-Let's use the example above to add our three bigWig tracks. In the space for bigDataUrl, we need to add the location of the file from Cyverse. We can get that link from Cyverse. Then click submit. 
+Let's use the example above to add our three bigWig tracks. In the space for **bigDataUrl**, we need to add the location of the file from Cyverse. We can get that link from Cyverse. 
+
+![Getting public links](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Cyverse_public_links.png)
+
+Then click **Submit**. 
 
 Repeat those steps using the links for the other two files, then navigate back to the active browser by selecting **Return to current position** to see the loaded bigWig tracks and to move around in the browser. 
 
-Next, let's add peak data from a bed file. Navigate back to the Add Custom Tracks page and enter a browser line like:
+Next, let's add peak data from a bed file. Navigate back to the **Add Custom Tracks** page and enter a browser line like:
 ```
 track type=narrowPeak name="PDNC4_test_peaks_macs2"
 ```
-Press enter/return and paste the data from your narrowPeak file below the browser line. Simply open the file, copy everything, then return to this page and paste it below the browser line. Then click submit. 
+Press enter/return and paste the data from your narrowPeak file below the browser line. Simply open the file, copy everything, then return to this page and paste it below the browser line. Then click **Submit**. 
 
 You should now be able to see your tracks and this set of peaks in your browser window. 
 
-Tip: NarrowPeak files contain the same but more data then a typical .bed file. If you want to see peaks with less information, you can convert your .narrowPeak or peaks.xls files to a simple .bed format and upload that.
+**Tip:** NarrowPeak files contain the same but more data then a typical .bed file. If you want to see peaks with less information, you can convert your .narrowPeak or peaks.xls files to a simple .bed format and upload that.
 
-Lastly, let's save this session so we can revisit it and edit it later. To save, select My Data then My Sessions. You might be prompted to log in at this point. We can log in to the YNA lab sessions management area. 
+Lastly, let's save this session so we can revisit it and edit it later. To save, select **My Data** then **My Sessions**. You will be prompted to log in at this point. We can log in to the YNA lab sessions management area. 
 User: Arbelylab
 Pass: arbelylab
+![Session management](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/My_sessions.png)
 
-Feel free to set up your own space if you'd like! You can add any session you want to this space. Always be aware of other user's sessions. Never save over an existing session unless it is your own. 
+Feel free to set up your own **Session Management** area if you'd like! 
 
-To save your session, scroll down on the session management page to where you see Save Settings. Type in a name for your active session and click Submit. 
+You can add any session you want to this space. Always be aware of other user's sessions. Never save over an existing session unless it is your own. 
 
-Now you can access your session with your tracks added at any time. Remember that your tracks are linked to their location in Cyverse. If you move them around, you'll need to update your tracks browser line with a new location. 
+To save your session, scroll down on the **Session Management** page to where you see **Save Settings**. Type in a name for your active session and click **Submit**.
+
+![Save your session](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Save_session.png)
+
+Now you can access your session with your tracks added at any time. You will see your session listed on the **Arbely Lab Session Management** area. Remember that your tracks are linked to their location in Cyverse. If you move them around, you'll need to update your tracks browser line with a new location. 
 
 
 
