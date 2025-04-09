@@ -136,12 +136,12 @@ We can use ```samtools stats``` command to return statistics about our sam/bam f
 
 ```bash
 samtools stats PDNC4_test_sorted.bam > PDNC4_test_stats.txt
-samtools stats PDNC4_CA-HJ-LAP_cC4_Y.sam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
-samtools stats E2_12m_sc_D4.sam > E2_12m_sc_D4_stats.txt
+samtools stats PDNC4_CA-HJ-LAP_cC4_Y.bam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
+samtools stats E2_12m_sc_D4.bam > E2_12m_sc_D4_stats.txt
 
-samtools stats PDNC4_test_ecoli.sam > PDNC4_test_ecoli_stats.txt
-samtools stats PDNC4_CA-HJ-LAP_cC4_Y_ecoli.sam > PDNC4_CA-HJ-LAP_cC4_Y_ecoli_stats.txt
-samtools stats E2_12m_sc_D4_ecoli.sam > E2_12m_sc_D4_ecoli_stats.txt
+samtools stats PDNC4_test_ecoli.bam > PDNC4_test_ecoli_stats.txt
+samtools stats PDNC4_CA-HJ-LAP_cC4_Y_ecoli.bam > PDNC4_CA-HJ-LAP_cC4_Y_ecoli_stats.txt
+samtools stats E2_12m_sc_D4_ecoli.bam > E2_12m_sc_D4_ecoli_stats.txt
 ```
 
 Now we can view the stats reports and create a table for our samples coverage. The stats report will look like this:
@@ -224,13 +224,13 @@ module load macs/2.2.7.1
 
 mkdir ./macs2_peaks
 
-macs2 callpeak -t PDNC4_test_macs.bam -c control.bam -n PDNC4_test_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t PDNC4_test_macs.bam -c Neg_control.bam -n PDNC4_test_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t PDNC4_test_macs.bam -n PDNC4_test_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
-macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c control.bam -n CA-HJ-LAP_cC4_Y_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c Neg_control.bam -n CA-HJ-LAP_cC4_Y_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -n CA-HJ-LAP_cC4_Y_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
-macs2 callpeak -t E2_12m_sc_D4_sorted.bam -c control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t E2_12m_sc_D4_sorted.bam -c Neg_control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t E2_12m_sc_D4_sorted.bam -n E2_12m_scD4_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
 ```
