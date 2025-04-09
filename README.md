@@ -62,7 +62,7 @@ To view all of the steps taken for creating/processing these files, check [here]
 
 Let's request a session on the cluster and grab the files with these commands:
 ```ruby
-srun -t 2:00:00 --cluster htc --partition htc --spus-per-task 16 --pty bash
+srun -t 2:00:00 --cluster htc --partition htc --cpus-per-task 16 --pty bash
 
 #Set the path to the directory you want to work in, use the actual path to your directory
 cd /ix1/yarbely/<your_user>/training/CR_PDNC4
