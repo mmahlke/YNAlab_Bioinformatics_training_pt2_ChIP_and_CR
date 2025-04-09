@@ -421,7 +421,7 @@ With the option to indefinitely have track sessions open and accessible comes a 
 
 I use [Cyverse](https://cyverse.org/) to host my $$\textnormal{\color{gold}bigWig}$$ tracks for UCSC track sessions. It is free (up to 5 Gb) and I've registered with two emails to be able to host many tracks, then removed tracks that I no longer used. If you have a different free remote host you prefer, go for it! This was the first one I found and it works for me. A key feature is that the host must provide publicly-accessible links to your data so that UCSC genome browser can freely 'talk' to your track file at its location. 
 
-First, let's upload our $$\textnormal{\color{gold}bigWigs}$$ to our Cyverse space. Navigate to the Discovery Environment and on the left option bar you will see an icon for your storage. Let's go here and then set up a folder for this training, then upload our three $$\textnormal{\color{gold}bigWigs}$$ there. 
+First, let's upload our $$\textnormal{\color{gold}bigWigs}$$ to our Cyverse space. Navigate to the **Discovery Environment** and on the left option bar you will see an icon for your storage (a pancake stack!). Let's go here, set up a folder for this training, then upload our three $$\textnormal{\color{gold}bigWigs}$$ there. 
 
 ![Getting_Started_cyverse](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Cyverse_upload.png)
 
