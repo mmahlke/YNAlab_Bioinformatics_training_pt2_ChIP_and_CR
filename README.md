@@ -135,7 +135,7 @@ module load samtools/1.14
 We can use ```samtools stats``` command to return statistics about our sam/bam files, including the number of mapped reads. We will perform this for our hg38p.14 alignments and our E.coli alignments.
 
 ```bash
-samtools stats PDNC4_test.sam > PDNC4_test_stats.txt
+samtools stats PDNC4_test_sorted.bam > PDNC4_test_stats.txt
 samtools stats PDNC4_CA-HJ-LAP_cC4_Y.sam > PDNC4_CA-HJ-LAP_cC4_Y_stats.txt
 samtools stats E2_12m_sc_D4.sam > E2_12m_sc_D4_stats.txt
 
