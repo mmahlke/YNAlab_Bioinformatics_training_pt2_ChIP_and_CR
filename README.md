@@ -87,7 +87,7 @@ Great, we have these aligned files but we can't see anything. Let's generate som
 Before we start, it's important to think about how we will **normalize** our files. Normalizing files, calling $$\textnormal{\color{violet}peaks}$$, and creating $$\textnormal{\color{gold}bigWig}$$ tracks are intertwined.
 
 ## Normalizing files for analysis
-**Normalizing** is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample that we submit for sequencing, but in reality that is not the case. To create maningful visualizations ($$\textnormal{\color{gold}bigWig}$$ tracks) and robustly identify enrichment ($$\textnormal{\color{violet}peak}$$ calling with MACS2, SEACR) between samples, we need to start with samples that have been adjusted to control for technical variability. Thus, we need to normalize our samples before we create $$\textnormal{\color{gold}bigWig}$$ or call $$\textnormal{\color{violet}peaks}$$. 
+**Normalizing** is a downsampling process that allows us to start with files that have equivalent sequencing coverage. Ideally, we would have the same ammount of coverage for every sample after sequencing, but in reality that is not the case. To create maningful visualizations ($$\textnormal{\color{gold}bigWig}$$ tracks) and robustly identify enrichment ($$\textnormal{\color{violet}peak}$$ calling with MACS2, SEACR) between samples, we need to start with samples that have been adjusted to control for technical variability. Thus, we need to normalize our samples before we create $$\textnormal{\color{gold}bigWig}$$ or call $$\textnormal{\color{violet}peaks}$$. 
 
 There are several ways to normalize depending on your data type and different types of normalization can be used to address different concerns. 
 
@@ -96,33 +96,40 @@ For $$\textnormal{\color{aqua}ChIP-seq}$$:
   + a spike-in control normalizes for differences in library preparation and sequencing outside of biological vairation between samples
 + normalize to input sample
   + an input sample is a control for background binding and tells us what part of a sample's enrichment is not due to randomness
-  + if you have individualized inputs for each sample, you can use them to normalize for IP efficiency 
+  + input samples are generally prepared as a fraction of a sample so that the input and IP (immunoprecipitated) sample are made from the same exact starting material
+  + if you have individualized inputs for each sample, you can use them to normalize for IP efficiency
++ normalize to read coverage
+  + control for IP efficiency or other factors (like uneven cell count) before library prep that may effect final coverage
 
 For $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$:
 + normalize to spike-in control
   + again, normalize for differences in library preparation and sequencing
-+ normalize to read coverage
-  + control for IP efficiency or other factors before library prep that may effect final coverage
 + normalize to a - control sample (like an input)
   + again, controlling for background levels
   + without a - control, you can use thresholding to set a background level
++ normalize to read coverage
+  + again, control for IP efficiency or other factors 
 
-What is a spike-in control? It's a small ammount of DNA from another species that is added to each sample before library preparation. Here, we are using E. coli DNA as the spike-in control for our $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ samples. 
+What is a spike-in control? It's a small ammount of DNA from another species that is added to each sample before library preparation. Those DNA will also go through the library prep process and be amplified in the same PCR reaction as the target sample. Here, we are using E. coli DNA as the spike-in control for our $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ samples. 
 
 **In general, the steps for normalizing are:**
 1) Align your sequencing reads to the target genome
 2) Align your sequencing reads to the spike-in genome
 3) Count total reads aligned to the target and spike-in genomes
 4) Calculate scaling factors for each sample
-5) Use scaling factors to generate bigWigs and to call peaks
+5) Use scaling factors to generate $$\textnormal{\color{gold}bigWigs}$$ and to call $$\textnormal{\color{violet}peaks}$$
 
 
 Let's assess our samples and calculate scaling factors. First, check where we are and load our modules. 
 ```bash
 pwd
 
+#We want to be in /ix1/yarbely/<your_username>/training/CR_PDNC4
+
 module load gcc/8.2.0
 module load samtools/1.14
+
+#gcc is a compiler that translates code between human-readable and machine-readable formats. We need it to run samtools
 ```
 
 We can use ```samtools stats``` command to return statistics about our sam/bam files, including the number of mapped reads. We will perform this for our hg38p.14 alignments and our E.coli alignments.
