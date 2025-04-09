@@ -224,13 +224,13 @@ module load macs/2.2.7.1
 
 mkdir ./macs2_peaks
 
-macs2 callpeak -t PDNC4_test_macs.bam -c Neg_control.bam -n PDNC4_test_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t PDNC4_test_macs.bam -c control.bam -n PDNC4_test_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t PDNC4_test_macs.bam -n PDNC4_test_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
-macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c Neg_control.bam -n CA-HJ-LAP_cC4_Y_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -c control.bam -n CA-HJ-LAP_cC4_Y_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t CA-HJ-LAP_cC4_Y_macs.bam -n CA-HJ-LAP_cC4_Y_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
-macs2 callpeak -t E2_12m_sc_D4_sorted.bam -c Neg_control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
+macs2 callpeak -t E2_12m_sc_D4_sorted.bam -c control.bam -n E2_12m_scD4_ctrl_10-3 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.001
 macs2 callpeak -t E2_12m_sc_D4_sorted.bam -n E2_12m_scD4_10-6 -f BAMPE --nolambda --outdir ./macs2_peaks -g 3.1e9 -q 0.000001
 
 ```
