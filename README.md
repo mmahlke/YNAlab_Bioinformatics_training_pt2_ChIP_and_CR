@@ -267,7 +267,7 @@ Let's look at the content of our $$\textnormal{\color{violet}peak}$$ files. Down
 2) chromStart - starting position in the chromosome 
 3) chromEnd - ending position in the chromosome 
 4) name - Name given to a region 
-5) score - integer part of 9th (+3) column (-log10qvalue) multiplied by 10. int(-10*log10qvalue) Indicates how dark the peak will be displayed in the browser (0-1000)
+5) score - integer part of 9th column (-log10qvalue) multiplied by 10. int(-10*log10qvalue) Indicates how dark the peak will be displayed in the browser (0-1000)
 6) strand - +/- to denote strand or orientation, or "." if no orientation is assigned
 1) signalValue - Measurement of overall (average) enrichment for the region
 2) pValue - Measurement of statistical significance (-log10). Use -1 if no pValue is assigned.
