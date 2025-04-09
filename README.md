@@ -252,7 +252,7 @@ MACS2 will give three output files all named with the prefix you specified in th
 
 I highly recommend taking some time to familiarize yourself with different data format structures [here](https://genome.ucsc.edu/FAQ/FAQformat.html). 
 
-Let's look at the content of our $$\textnormal{\color{violet}peak}$$ files. 
+Let's look at the content of our $$\textnormal{\color{violet}peak}$$ files. Download the files and open them to see what the structure is. Below is a guide to what is inside each. 
 <br/>
 
 **PDNC4_test_10-6_peaks.narrowPeak ([BED6+4 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12)):**
@@ -285,7 +285,7 @@ Let's look at the content of our $$\textnormal{\color{violet}peak}$$ files.
 4) length of summit region
 5) score - same as the narrowpeak value 5
 
-Let's download our .narrowPeak files and upload them to IGV to look at the distribution of $$\textnormal{\color{violet}peaks}$$. You should see that calling without a - control using MACS2 allows for very generous $$\textnormal{\color{violet}peak}$$ calling even with a stringent q-value. Calling with a - control provides more control on $$\textnormal{\color{violet}peak}$$ calling. 
+Let's upload our .narrowPeak files to IGV to look at the distribution of $$\textnormal{\color{violet}peaks}$$. You should see that calling without a - control using MACS2 allows for very generous $$\textnormal{\color{violet}peak}$$ calling even with a stringent q-value. Calling with a - control provides more control on $$\textnormal{\color{violet}peak}$$ calling. 
 
 You can also see that $$\textnormal{\color{violet}peak}$$ calling can perform differently based on the context. It behaves one way at CEN4 and another way at NeoCEN4. Keep that in mind. 
 
@@ -389,7 +389,11 @@ SEACR_1.3.sh PDNC4_test_seacr.bedgraph 0.01 non relaxed PDNC4_test_0.01
 
 Now let's download our ```SEACR``` $$\textnormal{\color{violet}peaks}$$ and upload them to IGV. We can see that the $$\textnormal{\color{violet}peaks}$$ are quite different between ```SEACR``` and ```MACS2```. 
 
-**Takehome:** $$\textnormal{\color{violet}peak}$$ calling is an art. You need to select the right $$\textnormal{\color{violet}peak}$$ calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy.
+When working in IGV, you can save a snapshot of what you currently see in the browser window. Select **Save Image** and choose .svg format of .png format. Scalable vector graphics (.svg) is preferrable for publication because it retains its resolution better if you (or others) need to resize it. Portable network graphics (.png) is generally preferred for high resolution photos or high-res images that will not be resized or re-scaled. 
+
+**Takehome:** $$\textnormal{\color{violet}peak}$$ calling is an art. You need to select the right $$\textnormal{\color{violet}peak}$$ calling strategy that works for your dataset and apply it the same way across your samples. You may need to test many different cutoffs, settings and approaches to find the right strategy. What another person did might only provide initial guidance for your final approach. 
+
+If you are interested in more detailed approaches to peak calling and analysis, I'll be adding links to bash scripts for peak intersection/overlap and R scripts for filtering using fold change data and plotting peak data later on. Check back!! You can also apply R tools like DeSeq2 and others to analyze your peak data to help identify differential enrichment. 
 
 ## Creating track sessions with UCSC Genome Browser
 
@@ -490,6 +494,10 @@ To save your session, scroll down on the **Session Management** page to where yo
 ![Save your session](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/Save_session.png)
 
 Now you can access your session with your tracks added at any time. You will see your session listed on the **Arbely Lab Session Management** area. Remember that your tracks are linked to their location in Cyverse. If you move them around, you'll need to update your tracks browser line with a new location. 
+
+Finally, you can save a snapshot of your UCSC browser window as well--just select **View** then select **PDF** to get options to download the current browser view and the chromosome ideogram with current location highlighted. PDF is a scalable vector format, so it's also good for publication. 
+
+Time to celebrate!! :D
 
 
 
