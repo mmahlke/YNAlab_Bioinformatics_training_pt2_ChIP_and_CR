@@ -48,7 +48,7 @@ Visualize tracks and peaks (IGV, UCSC) | Visualize tracks and peaks (IGV, UCSC)
 </div>
 
 
-## Analyzing ChIP-seq and CUT&RUN data
+## Analyzing $$\textnormal{\color{aqua}ChIP-seq}$$ and $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ data
 In our last training session, our final task was to submit a $$\textnormal{\color{aqua}CUT}$$ & $$\textnormal{\color{aqua}RUN}$$ file for alignment. We will continue to work on that file today, but we will also grab some files to work with alongside it. 
 
 + two additional PD-NC4 CUT&RUN files
