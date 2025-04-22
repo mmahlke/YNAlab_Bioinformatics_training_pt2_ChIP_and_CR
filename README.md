@@ -70,6 +70,8 @@ The 11 mandatory fields are depicted below:
 
 *Image modified from [source](https://samformat.pages.dev/sam-format-flag)*
 
+Please read more about SAM file formatting [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
+
 **BAM** format files are a compressed, binary version of a **SAM** file. This makes them smaller and easier to handle, but also means we can't directly investigate their contents because they are not human-readable. However, BAM files (.bam) can be indexed (.bai) and used during downstream processing steps to make data handling more efficient. 
 
 For today, I've already converted our **SAM** files to **BAM** format and generated indexes (.bai) for them. 
