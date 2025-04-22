@@ -60,6 +60,18 @@ In our last training session, our final task was to submit a $$\textnormal{\colo
  
 To view all of the steps taken for creating/processing these files, check [here](https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/scripts/CUT.RUN_training_alignments.bash).
 
+Before we start, let's talk a little about what we expect to see from our script that we ran in the last session. When we align .fasta/.fastq files to a genome assembly, the resulting file is a .sam format file. **Sequence Alignment/Map (SAM)** format is a TAB-delimited text format starting with an optional header denoted by '@'. If present, the header always precedes the alignment section that contains information about each read and how it aligns to the reference genome. Each alignment line has 11 mandatory fields for essential alignment information such as mapping position, and variable number of optional fields for flexible or aligner specific information.
+
+The 11 mandatory fields are depicted below:
+
+<div align="center">
+ <img src="https://github.com/mmahlke/YNAlab_Bioinformatics_training_pt2_ChIP_and_CR/blob/main/Figures/sam_format.png" alt="sam format fields" style="width:75%; height:75%;">
+</div>
+
+**BAM** format files are a compressed, binary version of a **SAM** file. This makes them smaller and easier to handle, but also means we can't directly investigate their contents because they are not human-readable. However, BAM files (.bam) can be indexed (.bai) and used during downstream processing steps to make data handling more efficient. 
+
+For today, I've already converted our **SAM** files to **BAM** format and generated indexes (.bai) for them. 
+
 Let's request a session on the cluster and grab the files with these commands:
 ```ruby
 srun -t 2:00:00 --cluster htc --partition htc --cpus-per-task 16 --pty bash
