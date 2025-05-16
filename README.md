@@ -194,9 +194,9 @@ Let's load our modules and run the command to make a $$\textnormal{\color{gold}b
 module purge
 module load deeptools/3.3.0
 
-bamCoverage -b PDNC4_test_sorted.bam -o PDNC4_test.bw --scaleFactor 0.458 -p max/2
-bamCoverage -b PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam -o CA-HJ-LAP_C4Y.bw --scaleFactor 0.399 -p max/2
-bamCoverage -b E2_12m_sc_D4_sorted.bam -o E2_12m_sc_D4.bw --scaleFactor 1 -p max/2
+bamCoverage -b PDNC4_test_sorted.bam -o PDNC4_test.bw --scaleFactor 0.458 
+bamCoverage -b PDNC4_CA-HJ-LAP_cC4_Y_sorted.bam -o CA-HJ-LAP_C4Y.bw --scaleFactor 0.399 
+bamCoverage -b E2_12m_sc_D4_sorted.bam -o E2_12m_sc_D4.bw --scaleFactor 1 
 ```
 Now download those $$\textnormal{\color{gold}bigWigs}$$ (.bw) to your computer.  
 
