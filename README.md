@@ -343,7 +343,8 @@ bedtools bamtobed -bedpe -i PDNC4_test_sorted.bam > PDNC4_test_seacr.bed
 
 #Now we are selecting the information from the bed file that we want to keep, sorting it and sending the output to a new bed file
 
-cut -f 1,2,3,6 PDNC4_test_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_test_seacr.clean.bed
+#For paired end files, coverage information is located in column 7. For non-paired-end files, it is located in column 5.
+cut -f 1,2,3,7 PDNC4_test_seacr.bed | sort -k1,1 -k2,2n -k3,3n > PDNC4_test_seacr.clean.bed
 
 #Next we are scaling the clean bed file using our calculated scaling factor and the size of the genome we aligned to, then sending the output to a bedgraph format
 ## Bedgraph format is the required file format for peak calling with SEACR 
